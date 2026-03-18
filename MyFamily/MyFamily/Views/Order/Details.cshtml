@@ -1,3 +1,4 @@
+@using MyFamily.Models
 @model Order
 
 @{
@@ -154,25 +155,100 @@
     }
 
     .status-badge {
-        padding: 5px 10px;
-        border-radius: 3px;
+        padding: 12px 20px;
+        border-radius: 5px;
         font-weight: bold;
         display: inline-block;
+        font-size: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .status-paid {
-        background-color: #90EE90;
-        color: #006400;
+        background-color: #27ae60;
+        color: white;
+        border: 2px solid #1e8449;
     }
 
     .status-partial {
-        background-color: #FFD700;
-        color: #000;
+        background-color: #f39c12;
+        color: white;
+        border: 2px solid #d68910;
     }
 
     .status-unpaid {
-        background-color: #FFB6C6;
-        color: #8B0000;
+        background-color: #e74c3c;
+        color: white;
+        border: 2px solid #c0392b;
+    }
+
+    .status-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border: 2px solid #4a7c59;
+        border-radius: 8px;
+        padding: 25px;
+        margin: 20px 0;
+    }
+
+    .status-title {
+        color: #4a7c59;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .status-label {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .btn-status {
+        padding: 15px 25px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .btn-status:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn-delivered {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .btn-delivered:hover {
+        background-color: #229954;
+    }
+
+    .btn-paid {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-paid:hover {
+        background-color: #2980b9;
+    }
+
+    .completion-message {
+        background-color: #d5f4e6;
+        border: 2px solid #27ae60;
+        color: #27ae60;
+        padding: 15px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
     }
 </style>
 
@@ -181,20 +257,32 @@
         <h2>Chi Tiết Đơn Hàng #@Model.OrderId</h2>
         @{
             string statusClass = "status-unpaid";
-            string statusText = "Chưa Thanh Toán";
+            string statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
 
-            if (Model.PaidAmount >= Model.TotalAmount)
+            switch (Model.Status)
             {
-                statusClass = "status-paid";
-                statusText = "Đã Thanh Toán";
-            }
-            else if (Model.PaidAmount > 0)
-            {
-                statusClass = "status-partial";
-                statusText = "Thanh Toán Một Phần";
+                case MyFamily.Models.OrderStatus.PendingPaid:
+                    statusClass = "status-partial";
+                    statusText = "❌ Chưa Lãy (Đã Trả Tiền)";
+                    break;
+                case MyFamily.Models.OrderStatus.DeliveredNotPaid:
+                    statusClass = "status-partial";
+                    statusText = "✅ Đã Lãy (Chưa Trả Tiền)";
+                    break;
+                case MyFamily.Models.OrderStatus.DeliveredPaid:
+                    statusClass = "status-paid";
+                    statusText = "✅ Đã Lãy (Đã Trả Tiền)";
+                    break;
+                default:
+                    statusClass = "status-unpaid";
+                    statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+                    break;
             }
         }
-        <span class="status-badge @statusClass">@statusText</span>
+        <div>
+            <span class="status-label">Trạng Thái Hiện Tại:</span>
+            <span class="status-badge @statusClass">@statusText</span>
+        </div>
     </div>
 
     <div class="detail-info">
@@ -216,9 +304,9 @@
                 <tr>
                     <th>STT</th>
                     <th>Tên Sản Phẩm</th>
-                    <th>Giá(K)</th>
+                    <th>Giá(VND)</th>
                     <th>Số Lượng(KG)</th>
-                    <th>Tổng Tiền(K)</th>
+                    <th>Tổng Tiền(VND)</th>
                 </tr>
             </thead>
             <tbody>
@@ -226,12 +314,13 @@
                     int index = 1;
                     foreach (var detail in Model.OrderDetails)
                     {
+                        var totalPrice = detail.Price * detail.Quantity;
                         <tr>
                             <td>@index</td>
                             <td>@detail.Product.ProductName</td>
                             <td>@detail.Price.ToString("N0")</td>
-                            <td>@detail.Quantity.ToString("N2")</td>
-                            <td>@(detail.Price * detail.Quantity).ToString("N0")</td>
+                            <td>@detail.Quantity.ToString("0.##")</td>
+                            <td>@totalPrice.ToString("N0")</td>
                         </tr>
                         index++;
                     }
@@ -250,21 +339,51 @@
             <span class="amount-label">Tổng Tiền Hàng:</span>
             <span class="amount-value">@Model.TotalAmount.ToString("N0") K</span>
         </div>
-        <div class="amount-row">
-            <span class="amount-label">Tiền Đã Thu:</span>
-            <span class="amount-value">@Model.PaidAmount.ToString("N0") K</span>
-        </div>
-        <div class="amount-row">
-            <span class="amount-label">Tiền Chưa Thu:</span>
-            <span class="amount-value negative">@Model.DebtAmount.ToString("N0") K</span>
-        </div>
-        <div class="amount-row">
-            <span class="amount-label">Tiền Chi (Cost):</span>
-            <span class="amount-value">@Model.CostAmount.ToString("N0") K</span>
-        </div>
-        <div class="amount-row" style="border-bottom: 2px solid #4a7c59; padding-top: 15px; margin-top: 10px;">
-            <span class="amount-label" style="font-size: 16px;">Lãi Suất (Profit):</span>
-            <span class="amount-value @(Model.ProfitAmount >= 0 ? "" : "negative")" style="font-size: 16px;">@Model.ProfitAmount.ToString("N0") K</span>
+    </div>
+
+    <div class="status-section">
+        <div class="status-title">🔄 Cập Nhật Trạng Thái Đơn Hàng</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+            @{
+                bool isDelivered = Model.Status == MyFamily.Models.OrderStatus.DeliveredNotPaid || 
+                                   Model.Status == MyFamily.Models.OrderStatus.DeliveredPaid;
+                bool isPaid = Model.Status == MyFamily.Models.OrderStatus.PendingPaid || 
+                             Model.Status == MyFamily.Models.OrderStatus.DeliveredPaid;
+                bool isCompleted = (bool)(ViewBag.IsCompleted ?? false);
+            }
+            
+            @if (!isDelivered && !isCompleted)
+            {
+                using (Html.BeginForm("UpdateStatus", "Order", new { id = Model.OrderId }, FormMethod.Post))
+                {
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="newStatus" value="delivered" />
+                        <span style="font-size: 14px; color: #555; font-weight: 500;">Đánh dấu hàng đã được giao cho khách hàng</span>
+                        <button type="submit" class="btn-status btn-delivered">🚚 Đã Giao Hàn</button>
+                    </div>
+                }
+            }
+            
+            @if (!isPaid && !isCompleted)
+            {
+                using (Html.BeginForm("UpdateStatus", "Order", new { id = Model.OrderId }, FormMethod.Post))
+                {
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="newStatus" value="paid" />
+                        <span style="font-size: 14px; color: #555; font-weight: 500;">Xác nhận khách hàng đã thanh toán đầy đủ</span>
+                        <button type="submit" class="btn-status btn-paid">💰 Đã Trả Tiền</button>
+                    </div>
+                }
+            }
+            
+            @if (isDelivered && isPaid)
+            {
+                <div class="completion-message">
+                    ✅ Đơn hàng đã hoàn thành thành công!
+                </div>
+            }
         </div>
     </div>
 

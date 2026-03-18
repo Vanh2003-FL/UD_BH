@@ -1,0 +1,130 @@
+@using MyFamily.Models
+@model Product
+
+@{
+    ViewBag.Title = "Chi Tiết Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .details-container {
+        max-width: 500px;
+        margin: 30px auto;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .details-container h2 {
+        color: #4a7c59;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .detail-item {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 3px;
+    }
+
+    .detail-label {
+        font-weight: bold;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .detail-value {
+        font-size: 18px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .detail-value.price {
+        color: #27ae60;
+        font-size: 24px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        flex: 1;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-info {
+        background-color: #16a085;
+        color: white;
+    }
+
+    .btn-info:hover {
+        background-color: #138d75;
+    }
+
+    .btn-cancel {
+        background-color: #999;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #666;
+    }
+</style>
+
+<div class="details-container">
+    <h2>📦 Chi Tiết Sản Phẩm</h2>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <div class="detail-label">Mã Sản Phẩm</div>
+            <div class="detail-value">@Model.ProductId</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Tên Sản Phẩm</div>
+            <div class="detail-value">@Model.ProductName</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Giá(VND)</div>
+            <div class="detail-value price">@Model.Price.ToString("N0")</div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        @Html.ActionLink("✏️ Chỉnh Sửa", "Edit", new { id = Model.ProductId }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("🗑️ Xóa", "Delete", new { id = Model.ProductId }, new { @class = "btn btn-info" })
+        @Html.ActionLink("↩️ Quay Lại", "Index", null, new { @class = "btn btn-cancel" })
+    </div>
+</div>

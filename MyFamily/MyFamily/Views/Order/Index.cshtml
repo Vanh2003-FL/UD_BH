@@ -1,3 +1,4 @@
+@using MyFamily.Models
 @model List<Order>
 
 @{
@@ -91,6 +92,13 @@
         color: white;
     }
 
+    .btn-edit:disabled,
+    .btn-edit.disabled {
+        background-color: #ccc;
+        color: #999;
+        cursor: not-allowed;
+    }
+
     .btn-delete {
         background-color: #cc0000;
         color: white;
@@ -124,11 +132,143 @@
     .table-container {
         overflow-x: auto;
     }
+
+    .filter-section {
+        background-color: #f5f5f5;
+        padding: 12px 15px;
+        border-radius: 5px;
+        margin-bottom: 12px;
+        border: 1px solid #ddd;
+    }
+
+    .filter-section h3 {
+        color: #4a7c59;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 4px;
+        font-size: 12px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 0 3px rgba(74, 124, 89, 0.2);
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-filter {
+        background-color: #4a7c59;
+        color: white;
+        padding: 6px 15px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    .btn-filter:hover {
+        background-color: #3a6c49;
+    }
+
+    .btn-clear-filter {
+        background-color: #999;
+        color: white;
+        padding: 6px 15px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    .btn-clear-filter:hover {
+        background-color: #888;
+    }
+
+    .filter-result {
+        color: #666;
+        margin-bottom: 0;
+        font-size: 12px;
+        margin-top: 8px;
+    }
 </style>
 
 <div class="header-section">
     <h2>@ViewBag.Title</h2>
     @Html.ActionLink("Tạo Đơn Hàng Mới", "Create", new { }, new { @class = "btn-create" })
+</div>
+
+<div class="filter-section">
+    <h3>🔍 Tìm Kiếm & Lọc Đơn Hàng</h3>
+    @using (Html.BeginForm("Index", "Order", FormMethod.Get))
+    {
+        <div class="filter-row">
+            <div class="filter-group" style="grid-column: span 2;">
+                <label for="search">Tìm Kiếm (Khách Hàng hoặc Sản Phẩm)</label>
+                <input type="text" id="search" name="search" placeholder="Nhập tên khách hàng hoặc sản phẩm..." value="@ViewBag.Search" />
+            </div>
+
+            <div class="filter-group">
+                <label for="filterStatus">Trạng Thái</label>
+                <select id="filterStatus" name="filterStatus">
+                    <option value="">-- Tất Cả Trạng Thái --</option>
+                    <option value="PendingNotPaid" @(ViewBag.FilterStatus == "PendingNotPaid" ? "selected" : "")>❌ Chưa Lãy (Chưa Trả)</option>
+                    <option value="PendingPaid" @(ViewBag.FilterStatus == "PendingPaid" ? "selected" : "")>❌ Chưa Lãy (Đã Trả)</option>
+                    <option value="DeliveredNotPaid" @(ViewBag.FilterStatus == "DeliveredNotPaid" ? "selected" : "")>✅ Đã Lãy (Chưa Trả)</option>
+                    <option value="DeliveredPaid" @(ViewBag.FilterStatus == "DeliveredPaid" ? "selected" : "")>✅ Đã Lãy (Đã Trả)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-buttons">
+            <button type="submit" class="btn-filter">🔍 Tìm Kiếm</button>
+            <a href="@Url.Action("Index", "Order")" class="btn-clear-filter">✖ Xóa Bộ Lọc</a>
+        </div>
+    }
+
+    @{
+        bool hasFilter = !string.IsNullOrWhiteSpace(ViewBag.Search) || 
+                         !string.IsNullOrWhiteSpace(ViewBag.FilterStatus);
+    }
+    
+    @if (hasFilter)
+    {
+        <div class="filter-result">
+            Tìm thấy <strong>@Model.Count</strong> đơn hàng
+        </div>
+    }
 </div>
 
 @if (Model.Count > 0)
@@ -140,15 +280,9 @@
                     <th>STT</th>
                     <th>Tên</th>
                     <th>Ngày Đặt</th>
-                    <th>Danh Mục</th>
-                    <th>Giá(K)</th>
-                    <th>Số lượng(KG)</th>
-                    <th>Tiền(K)</th>
+                    <th>Sản Phẩm</th>
+                    <th>Tổng Tiền(VND)</th>
                     <th>Trạng Thái</th>
-                    <th style="background-color: #00cc00; color: white;">Tiền Đã Thu(K)</th>
-                    <th style="background-color: #00cc00; color: white;">Tiền Chưa Thu(K)</th>
-                    <th style="background-color: #00cc00; color: white;">Tiền Chi(K)</th>
-                    <th style="background-color: #00cc00; color: white;">Lãi(K)</th>
                     <th>Thao Tác</th>
                 </tr>
             </thead>
@@ -157,45 +291,64 @@
                     int index = 1;
                     foreach (var order in Model)
                     {
-                        foreach (var detail in order.OrderDetails)
+                        string statusClass = "status-unpaid";
+                        string statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+
+                        switch (order.Status)
                         {
-                            string statusClass = "status-unpaid";
-                            string statusText = "Chưa Thanh Toán";
-
-                            if (order.PaidAmount >= order.TotalAmount)
-                            {
-                                statusClass = "status-paid";
-                                statusText = "Đã Thanh Toán";
-                            }
-                            else if (order.PaidAmount > 0)
-                            {
+                            case MyFamily.Models.OrderStatus.PendingPaid:
                                 statusClass = "status-partial";
-                                statusText = "Thanh Toán Một Phần";
-                            }
-
-                            <tr>
-                                <td>@index</td>
-                                <td>@order.Customer.Name</td>
-                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
-                                <td>@detail.Product.ProductName</td>
-                                <td>@detail.Price.ToString("N0")</td>
-                                <td>@detail.Quantity.ToString("N2")</td>
-                                <td class="amount-positive">@(detail.Price * detail.Quantity).ToString("N0")</td>
-                                <td><span class="@statusClass">@statusText</span></td>
-                                <td class="amount-positive">@order.PaidAmount.ToString("N0")</td>
-                                <td class="amount-negative">@order.DebtAmount.ToString("N0")</td>
-                                <td>@order.CostAmount.ToString("N0")</td>
-                                <td class="@(order.ProfitAmount >= 0 ? "amount-positive" : "amount-negative")">@order.ProfitAmount.ToString("N0")</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        @Html.ActionLink("Xem", "Details", new { id = order.OrderId }, new { @class = "btn-sm btn-view" })
-                                        @Html.ActionLink("Sửa", "Edit", new { id = order.OrderId }, new { @class = "btn-sm btn-edit" })
-                                        @Html.ActionLink("Xóa", "Delete", new { id = order.OrderId }, new { @class = "btn-sm btn-delete" })
-                                    </div>
-                                </td>
-                            </tr>
-                            index++;
+                                statusText = "❌ Chưa Lãy (Đã Trả Tiền)";
+                                break;
+                            case MyFamily.Models.OrderStatus.DeliveredNotPaid:
+                                statusClass = "status-partial";
+                                statusText = "✅ Đã Lãy (Chưa Trả Tiền)";
+                                break;
+                            case MyFamily.Models.OrderStatus.DeliveredPaid:
+                                statusClass = "status-paid";
+                                statusText = "✅ Đã Lãy (Đã Trả Tiền)";
+                                break;
+                            default:
+                                statusClass = "status-unpaid";
+                                statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+                                break;
                         }
+
+                        // Build product summary
+                        string productSummary = "";
+                        if (order.OrderDetails != null && order.OrderDetails.Count > 0)
+                        {
+                            var productNames = new List<string>();
+                            foreach (var detail in order.OrderDetails)
+                            {
+                                productNames.Add(detail.Product.ProductName + " (" + detail.Quantity.ToString("0.##") + "kg)");
+                            }
+                            productSummary = string.Join(", ", productNames);
+                        }
+
+                        <tr>
+                            <td>@index</td>
+                            <td>@order.Customer.Name</td>
+                            <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                            <td>@productSummary</td>
+                            <td class="amount-positive">@order.TotalAmount.ToString("N0")</td>
+                            <td><span class="@statusClass">@statusText</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    @Html.ActionLink("Xem", "Details", new { id = order.OrderId }, new { @class = "btn-sm btn-view" })
+                                    @if (order.Status == MyFamily.Models.OrderStatus.DeliveredPaid)
+                                    {
+                                        <span class="btn-sm btn-edit disabled" title="Đơn hàng đã hoàn thành, k được sửa">Sửa</span>
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink("Sửa", "Edit", new { id = order.OrderId }, new { @class = "btn-sm btn-edit" })
+                                    }
+                                    @Html.ActionLink("Xóa", "Delete", new { id = order.OrderId }, new { @class = "btn-sm btn-delete" })
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
                     }
                 }
             </tbody>

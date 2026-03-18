@@ -1,6 +1,8 @@
-﻿public class OrderDetail
+﻿namespace MyFamily.Models
 {
-    public int OrderDetailId { get; set; }
+    public class OrderDetail
+    {
+        public int OrderDetailId { get; set; }
 
     public int OrderId { get; set; }
     public virtual Order Order { get; set; }
@@ -10,4 +12,5 @@
 
     public decimal Quantity { get; set; }
     public decimal Price { get; set; }
+    }
 }

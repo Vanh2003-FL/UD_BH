@@ -1,3 +1,4 @@
+@using MyFamily.Models
 @model Order
 
 @{
@@ -7,8 +8,9 @@
 
 <style>
     .form-container {
+        width: 100%;
         max-width: 700px;
-        margin: 20px 0;
+        margin: 20px auto;
         background-color: #fff;
         border: 1px solid #ddd;
         padding: 20px;
@@ -89,6 +91,35 @@
         background-color: #555;
     }
 
+    .btn-add-product {
+        background-color: #27ae60;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .btn-add-product:hover {
+        background-color: #229954;
+    }
+
+    .btn-remove {
+        background-color: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btn-remove:hover {
+        background-color: #c0392b;
+    }
+
     .error-message {
         color: red;
         font-size: 12px;
@@ -98,6 +129,30 @@
     .readonly-field {
         background-color: #f5f5f5;
         cursor: not-allowed;
+    }
+
+    .products-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 13px;
+    }
+
+    .products-info-table th {
+        background-color: #f0f0f0;
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .products-info-table td {
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+    }
+
+    .products-info-table tr:nth-child(even) {
+        background-color: #f9f9f9;
     }
 </style>
 
@@ -112,50 +167,209 @@
             <strong>Đơn Hàng ID:</strong> @Model.OrderId
             <br />
             <strong>Ngày Tạo:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+            <br />
+            <strong>Khách Hàng:</strong> @Model.Customer.Name
         </div>
 
         @Html.HiddenFor(model => model.OrderId)
         @Html.HiddenFor(model => model.OrderDate)
+        @Html.HiddenFor(model => model.CustomerId)
+        @Html.HiddenFor(model => model.TotalAmount)
+        @Html.HiddenFor(model => model.PaidAmount)
+        @Html.HiddenFor(model => model.DebtAmount)
+        @Html.HiddenFor(model => model.CostAmount)
+        @Html.HiddenFor(model => model.ProfitAmount)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CustomerId, "Khách Hàng")
-            @Html.DropDownList("CustomerId", ViewBag.CustomerId as SelectList, "-- Chọn Khách Hàng --")
-            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "error-message" })
-        </div>
+        <h3 style="color: #4a7c59; margin-top: 20px; margin-bottom: 15px;">📦 Sản Phẩm Hiện Tại</h3>
+        if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
+        {
+            <table class="products-info-table">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá(VND)</th>
+                        <th>Số Lượng(KG) - Sửa</th>
+                        <th>Tổng Tiền(VND)</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int index = 1;
+                        foreach (var detail in Model.OrderDetails)
+                        {
+                            var totalPrice = detail.Price * detail.Quantity;
+                            <tr id="existing-product-row-@detail.OrderDetailId">
+                                <td>@index</td>
+                                <td>@detail.Product.ProductName</td>
+                                <td>@detail.Price.ToString("N0")</td>
+                                <td>
+                                    <input type="number" name="quantities[@index-1]" value="@detail.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)" step="0.01" min="0" style="width: 100px; padding: 5px;" />
+                                    <input type="hidden" name="orderDetailIds[@index-1]" value="@detail.OrderDetailId" />
+                                </td>
+                                <td>@totalPrice.ToString("N0")</td>
+                                <td>
+                                    <button type="button" class="btn-remove" onclick="removeExistingProduct(@detail.OrderDetailId)">Xóa</button>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p style="color: #999; margin: 20px 0;">Không có sản phẩm trong đơn hàng này.</p>
+        }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TotalAmount, "Tổng Tiền(K)")
-            @Html.TextBoxFor(model => model.TotalAmount, new { @type = "number", @step = "0.01" })
-            @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "error-message" })
-        </div>
+        <h3 style="color: #4a7c59; margin-top: 30px; margin-bottom: 15px;">➕ Thêm Sản Phẩm Mới</h3>
+        <button type="button" class="btn-add-product" onclick="addNewProductRow()">+ Thêm Sản Phẩm</button>
+        
+        <table class="products-info-table">
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th>Giá(VND)</th>
+                    <th>Số Lượng(KG)</th>
+                    <th>Tổng Tiền(VND)</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody id="newProductsBody">
+            </tbody>
+        </table>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaidAmount, "Tiền Đã Thu(K)")
-            @Html.TextBoxFor(model => model.PaidAmount, new { @type = "number", @step = "0.01" })
-            @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "error-message" })
-        </div>
+        <!-- Hidden data for products -->
+        <div id="productsData" data-products="@Html.Raw(Json.Encode(ViewBag.AllProducts ?? new List<object>()))" style="display:none;"></div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DebtAmount, "Tiền Chưa Thu(K)")
-            @Html.TextBoxFor(model => model.DebtAmount, new { @type = "number", @step = "0.01" })
-            @Html.ValidationMessageFor(model => model.DebtAmount, "", new { @class = "error-message" })
-        </div>
+        <script>
+            var newProductCount = 0;
+            var removedOrderDetailIds = [];
+            var allProducts = [];
+            
+            // Load products when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                // First try to get from data attribute (ViewBag)
+                var productsDataDiv = document.getElementById('productsData');
+                if (productsDataDiv && productsDataDiv.getAttribute('data-products')) {
+                    try {
+                        var jsonStr = productsDataDiv.getAttribute('data-products');
+                        if (jsonStr && jsonStr.length > 2) {
+                            allProducts = JSON.parse(jsonStr);
+                        }
+                    } catch(e) {
+                        console.error('Error parsing products from data attribute:', e);
+                    }
+                }
+                
+                // If no products from ViewBag, fetch via AJAX
+                if (!allProducts || allProducts.length === 0) {
+                    console.log('Fetching products via AJAX...');
+                    fetch('/Product/GetAll')
+                        .then(response => response.json())
+                        .then(data => {
+                            allProducts = data;
+                            console.log('Products loaded via AJAX:', allProducts);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching products:', error);
+                            allProducts = [];
+                        });
+                } else {
+                    console.log('Products loaded from ViewBag:', allProducts);
+                }
+            });
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CostAmount, "Tiền Chi(K)")
-            @Html.TextBoxFor(model => model.CostAmount, new { @type = "number", @step = "0.01" })
-            @Html.ValidationMessageFor(model => model.CostAmount, "", new { @class = "error-message" })
-        </div>
+            function addNewProductRow() {
+                var tbody = document.getElementById('newProductsBody');
+                var newRow = document.createElement('tr');
+                newRow.id = 'new-product-row-' + newProductCount;
+                
+                var productOptions = '<option value="">-- Chọn Sản Phẩm --</option>';
+                if (allProducts && allProducts.length > 0) {
+                    for (var i = 0; i < allProducts.length; i++) {
+                        productOptions += '<option value="' + allProducts[i].ProductId + '">' + allProducts[i].ProductName + '</option>';
+                    }
+                } else {
+                    console.warn('No products available!');
+                    productOptions += '<option disabled>Không có sản phẩm</option>';
+                }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProfitAmount, "Lãi(K)")
-            @Html.TextBoxFor(model => model.ProfitAmount, new { @type = "number", @step = "0.01" })
-            @Html.ValidationMessageFor(model => model.ProfitAmount, "", new { @class = "error-message" })
-        </div>
+                newRow.innerHTML = '<td><select name="newProducts[' + newProductCount + '].ProductId" class="product-select" onchange="updatePrice(this)" required>' + productOptions + '</select></td>'
+                    + '<td><input type="number" name="newProducts[' + newProductCount + '].Price" class="price-input" step="0.01" readonly /></td>'
+                    + '<td><input type="number" name="newProducts[' + newProductCount + '].Quantity" class="quantity-input" value="1" step="0.01" onchange="updateTotal(this)" title="Nhập số lượng" /></td>'
+                    + '<td><span class="total-amount">0</span></td>'
+                    + '<td><button type="button" class="btn-remove" onclick="removeNewProductRow(' + newProductCount + ')">Xóa</button></td>';
 
-        <div class="button-group">
-            <button type="submit" class="btn btn-submit">Cập Nhật Đơn Hàng</button>
-            @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-cancel" })
+                tbody.appendChild(newRow);
+                newProductCount++;
+            }
+
+            function removeNewProductRow(index) {
+                var row = document.getElementById('new-product-row-' + index);
+                if (row) {
+                    row.remove();
+                }
+            }
+
+            function removeExistingProduct(orderDetailId) {
+                if (confirm('Bạn chắc chắn muốn xóa sản phẩm này khỏi đơn hàng?')) {
+                    var row = document.getElementById('existing-product-row-' + orderDetailId);
+                    if (row) {
+                        row.style.display = 'none';
+                    }
+                    removedOrderDetailIds.push(orderDetailId);
+                    
+                    // Add hidden input to track removed product
+                    var form = document.querySelector('form');
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'removedDetailIds';
+                    input.value = removedOrderDetailIds.join(',');
+                    // Remove old input if exists
+                    var oldInput = form.querySelector('input[name="removedDetailIds"]');
+                    if (oldInput) oldInput.remove();
+                    form.appendChild(input);
+                }
+            }
+
+            function updatePrice(select) {
+                var productId = select.value;
+                var row = select.closest('tr');
+                var priceInput = row.querySelector('.price-input');
+                var quantityInput = row.querySelector('.quantity-input');
+                
+                if (productId && allProducts && allProducts.length > 0) {
+                    for (var i = 0; i < allProducts.length; i++) {
+                        if (allProducts[i].ProductId == productId) {
+                            priceInput.value = allProducts[i].Price;
+                            quantityInput.value = 1;
+                            updateTotal(quantityInput);
+                            return;
+                        }
+                    }
+                }
+                priceInput.value = 0;
+            }
+
+            function updateTotal(quantityInput) {
+                var row = quantityInput.closest('tr');
+                var priceInput = row.querySelector('.price-input');
+                var totalSpan = row.querySelector('.total-amount');
+                
+                var price = parseFloat(priceInput.value) || 0;
+                var quantity = parseFloat(quantityInput.value) || 0;
+                var total = price * quantity;
+                
+                totalSpan.textContent = total.toFixed(0);
+            }
+        </script>
+
+        <div class="button-group" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-submit">💾 Lưu Thay Đổi</button>
+            @Html.ActionLink("↩️ Quay Lại", "Index", null, new { @class = "btn btn-cancel" })
         </div>
     }
 </div>

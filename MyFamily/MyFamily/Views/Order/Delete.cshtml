@@ -1,3 +1,4 @@
+@using MyFamily.Models
 @model Order
 
 @{
@@ -7,8 +8,9 @@
 
 <style>
     .delete-container {
+        width: 100%;
         max-width: 600px;
-        margin: 20px 0;
+        margin: 20px auto;
         background-color: #fff;
         border: 1px solid #ddd;
         padding: 20px;
@@ -131,11 +133,9 @@
         </div>
     </div>
 
-    @using (Html.BeginForm("Delete", "Order", FormMethod.Post))
+    @using (Html.BeginForm("Delete", "Order", new { id = Model.OrderId }, FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.OrderId)
-
         <div class="button-group">
             <button type="submit" class="btn btn-delete">Xóa Đơn Hàng</button>
             @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-cancel" })

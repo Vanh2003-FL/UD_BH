@@ -1,20 +1,25 @@
 ﻿using System.Data.Entity.Migrations;
+using MyFamily.Models;
 
-internal sealed class Configuration : DbMigrationsConfiguration<MyDbContext>
+namespace MyFamily.Migrations
 {
-    public Configuration()
+    public sealed class Configuration : DbMigrationsConfiguration<MyDbContext>
     {
-        AutomaticMigrationsEnabled = false;
-    }
+        public Configuration()
+        {
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = false;
+        }
 
-    protected override void Seed(MyDbContext context)
-    {
-        context.Users.AddOrUpdate(x => x.Username,
-            new User
-            {
-                Username = "admin",
-                Password = "123456",
-                Role = "Admin"
-            });
+        protected override void Seed(MyDbContext context)
+        {
+            context.Users.AddOrUpdate(x => x.Username,
+                new User
+                {
+                    Username = "admin",
+                    Password = "123456",
+                    Role = "Admin"
+                });
+        }
     }
 }

@@ -1,5 +1,8 @@
-﻿public class Customer
+﻿namespace MyFamily.Models
 {
-    public int CustomerId { get; set; }
+    public class Customer
+    {
+        public int CustomerId { get; set; }
     public string Name { get; set; }
+    }
 }

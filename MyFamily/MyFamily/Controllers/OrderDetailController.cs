@@ -51,7 +51,7 @@ namespace MyFamily.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+                return HttpNotFound();
             }
 
             OrderDetail orderDetail = db.OrderDetails.Find(id);
@@ -85,7 +85,7 @@ namespace MyFamily.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+                return HttpNotFound();
             }
 
             OrderDetail orderDetail = db.OrderDetails

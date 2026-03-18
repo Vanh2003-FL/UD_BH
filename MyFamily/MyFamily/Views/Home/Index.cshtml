@@ -1,33 +1,421 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using MyFamily.Models
+@model List<Order>
+
+@{
+    ViewBag.Title = "Dashboard";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<style>
+    .page-title {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    @@media (max-width: 1200px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .stat-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-icon {
+        font-size: 36px;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 12px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .stat-card.orders {
+        border-left: 4px solid #3498db;
+    }
+
+    .stat-card.revenue {
+        border-left: 4px solid #27ae60;
+    }
+
+    .stat-card.pending {
+        border-left: 4px solid #f39c12;
+    }
+
+    .stat-card.customers {
+        border-left: 4px solid #9b59b6;
+    }
+
+    .actions-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .actions-section h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 16px;
+        margin-top: 0;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: bold;
+        font-size: 13px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .action-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+
+    .action-btn.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .action-btn.success {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .action-btn.info {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .quick-stats {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .quick-stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .quick-stat-row:last-child {
+        border-bottom: none;
+    }
+
+    .quick-stat-label {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .quick-stat-value {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .dashboard-wrapper {
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+</style>
+
+<div class="dashboard-wrapper">
+<h1 class="page-title">📊 Bảng Điều Khiển</h1>
+
+<div class="dashboard-grid">
+    <div class="stat-card orders">
+        <div class="stat-icon">📋</div>
+        <div class="stat-label">Tổng Đơn Hàng</div>
+        <div class="stat-value">@(Model != null ? Model.Count : 0)</div>
     </div>
-</main>
+
+    <div class="stat-card revenue">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Tổng Doanh Thu</div>
+        <div class="stat-value">@(ViewBag.TotalRevenue != null ? ((decimal)ViewBag.TotalRevenue).ToString("N0") : "0") VND</div>
+    </div>
+
+    <div class="stat-card pending">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Chưa Thanh Toán</div>
+        <div class="stat-value">@(ViewBag.TotalDebt != null ? ((decimal)ViewBag.TotalDebt).ToString("N0") : "0") VND</div>
+    </div>
+
+    <div class="stat-card customers">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Số Khách Hàng</div>
+        <div class="stat-value">@(ViewBag.TotalCustomers != null ? ViewBag.TotalCustomers : 0)</div>
+    </div>
+</div>
+
+<div class="actions-section">
+    <h3>🚀 Tính Năng Nhanh</h3>
+    <div class="actions-grid">
+        @Html.ActionLink("Tạo Đơn Hàng Mới", "Create", "Order", null, new { @class = "action-btn primary" })
+        @Html.ActionLink("Xem Danh Sách Đơn", "Index", "Order", null, new { @class = "action-btn success" })
+        @Html.ActionLink("Thống Kê", "Statistics", "Home", null, new { @class = "action-btn info" })
+    </div>
+</div>
+
+<div class="orders-list-section">
+    <h3>📋 Danh Sách Đơn Hàng Gần Đây</h3>
+    
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Khách Hàng</th>
+                        <th>Ngày Đặt</th>
+                        <th>Sản Phẩm</th>
+                        <th>Tổng Tiền(VND)</th>
+                        <th>Trạng Thái</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var order in Model.Take(10))
+                        {
+                            string statusClass = "status-unpaid";
+                            string statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+
+                            switch (order.Status)
+                            {
+                                case MyFamily.Models.OrderStatus.PendingPaid:
+                                    statusClass = "status-partial";
+                                    statusText = "❌ Chưa Lãy (Đã Trả Tiền)";
+                                    break;
+                                case MyFamily.Models.OrderStatus.DeliveredNotPaid:
+                                    statusClass = "status-partial";
+                                    statusText = "✅ Đã Lãy (Chưa Trả Tiền)";
+                                    break;
+                                case MyFamily.Models.OrderStatus.DeliveredPaid:
+                                    statusClass = "status-paid";
+                                    statusText = "✅ Đã Lãy (Đã Trả Tiền)";
+                                    break;
+                                default:
+                                    statusClass = "status-unpaid";
+                                    statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+                                    break;
+                            }
+
+                            // Build product summary with quantity
+                            string productSummary = "";
+                            if (order.OrderDetails != null && order.OrderDetails.Count > 0)
+                            {
+                                var productNames = new List<string>();
+                                foreach (var detail in order.OrderDetails)
+                                {
+                                    productNames.Add(detail.Product.ProductName + " (" + detail.Quantity.ToString("0.##") + "kg)");
+                                }
+                                productSummary = string.Join(", ", productNames);
+                            }
+
+                            <tr>
+                                <td>@order.Customer.Name</td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                <td>@productSummary</td>
+                                <td class="positive">@order.TotalAmount.ToString("N0")</td>
+                                <td>
+                                    <span class="status-badge @statusClass">@statusText</span>
+                                </td>
+                                <td>
+                                    <div class="action-icons">
+                                        @Html.ActionLink("✏️", "Edit", "Order", new { id = order.OrderId }, new { title = "Sửa", @class = "icon-btn" })
+                                        @Html.ActionLink("👁️", "Details", "Order", new { id = order.OrderId }, new { title = "Xem", @class = "icon-btn" })
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            @Html.ActionLink("Xem Tất Cả Đơn Hàng →", "Index", "Order", null, new { @class = "btn-view-all" })
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 30px; color: #999;">
+            <p>Chưa có đơn hàng nào</p>
+            @Html.ActionLink("Tạo đơn hàng đầu tiên", "Create", "Order", null, new { @class = "action-btn primary" })
+        </div>
+    }
+</div>
+</div>
+
+<style>
+    .orders-list-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .orders-list-section h3 {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    .orders-table th {
+        background-color: #34495e;
+        color: white;
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #2c3e50;
+        font-weight: bold;
+    }
+
+    .orders-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .orders-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .orders-table tr:hover {
+        background-color: #f0f0f0;
+    }
+
+    .orders-table .positive {
+        color: #27ae60;
+        font-weight: bold;
+    }
+
+    .orders-table .negative {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .status-badge.status-paid {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-badge.status-partial {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status-badge.status-unpaid {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .action-icons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .icon-btn {
+        font-size: 16px;
+        text-decoration: none;
+        padding: 5px 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        background-color: #f5f5f5;
+        transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+        background-color: #e0e0e0;
+        transform: scale(1.1);
+    }
+
+    .btn-view-all {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-view-all:hover {
+        transform: scale(1.05);
+        color: white !important;
+    }
+</style>

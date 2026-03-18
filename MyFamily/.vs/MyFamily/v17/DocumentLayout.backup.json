@@ -3,40 +3,48 @@
   "WorkspaceRootPath": "D:\\Family\\MyFamily\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\migrations\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|D:\\Family\\MyFamily\\myfamily\\views\\order\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\order\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|D:\\Family\\MyFamily\\myfamily\\views\\order\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\order\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|D:\\Family\\MyFamily\\myfamily\\views\\home\\about.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\home\\about.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\views\\order\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\order\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|D:\\Family\\MyFamily\\myfamily\\views\\order\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\views\\order\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|D:\\Family\\MyFamily\\myfamily\\migrations\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\migrations\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\migrations\\202603180345599_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\migrations\\202603180345599_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\models\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\models\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|d:\\family\\myfamily\\myfamily\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{4F3DB1E8-F74D-4D64-8223-86E2449A46D4}|MyFamily\\MyFamily.csproj|solutionrelative:myfamily\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,125 +54,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 922,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 13,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "202603180345599_Init.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Migrations\\202603180345599_Init.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Migrations\\202603180345599_Init.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Migrations\\202603180345599_Init.cs",
-              "RelativeToolTip": "MyFamily\\Migrations\\202603180345599_Init.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:46:14.23Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Configuration.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Migrations\\Configuration.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Migrations\\Configuration.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Migrations\\Configuration.cs*",
-              "RelativeToolTip": "MyFamily\\Migrations\\Configuration.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:45:48.896Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DbContext.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Models\\DbContext.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Models\\DbContext.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Models\\DbContext.cs",
-              "RelativeToolTip": "MyFamily\\Models\\DbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:44:57.324Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "OrderDetail.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Models\\OrderDetail.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Models\\OrderDetail.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Models\\OrderDetail.cs",
-              "RelativeToolTip": "MyFamily\\Models\\OrderDetail.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAcAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:44:26.171Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Order.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Models\\Order.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Models\\Order.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Models\\Order.cs",
-              "RelativeToolTip": "MyFamily\\Models\\Order.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAwwAkAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:43:50.67Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Product.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Models\\Product.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Models\\Product.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Models\\Product.cs",
-              "RelativeToolTip": "MyFamily\\Models\\Product.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAUAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:43:25.463Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Customer.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Models\\Customer.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Models\\Customer.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Models\\Customer.cs",
-              "RelativeToolTip": "MyFamily\\Models\\Customer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:42:49.744Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "User.cs",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Models\\User.cs",
-              "RelativeDocumentMoniker": "MyFamily\\Models\\User.cs",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Models\\User.cs",
-              "RelativeToolTip": "MyFamily\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T03:42:20.324Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Web.config",
-              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Web.config",
-              "RelativeDocumentMoniker": "MyFamily\\Web.config",
-              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Web.config",
-              "RelativeToolTip": "MyFamily\\Web.config",
-              "ViewState": "AgIAACQAAAAAAAAAAAAmwEgAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2026-03-18T03:38:17.093Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
@@ -184,6 +75,148 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T08:06:39.355Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Contact.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Home\\Contact.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Home\\Contact.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Home\\Contact.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Home\\Contact.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T08:06:37.876Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAAEQAAABrAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T08:05:37.155Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\_ViewStart.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\_ViewStart.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T08:05:31.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Index.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Order\\Index.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Index.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Order\\Index.cshtml",
+              "ViewState": "AgIAACEBAAAAAAAAAAAAACYBAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T06:09:32.421Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "About.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Home\\About.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Home\\About.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Home\\About.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Home\\About.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAKAAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T04:30:42.254Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Details.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Order\\Details.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Details.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Order\\Details.cshtml",
+              "ViewState": "AgIAAGMBAAAAAAAAAAAAAGsBAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T04:27:20.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Delete.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Order\\Delete.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Delete.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Order\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T04:26:10.24Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Create.cshtml",
+              "RelativeDocumentMoniker": "MyFamily\\Views\\Order\\Create.cshtml",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Views\\Order\\Create.cshtml",
+              "RelativeToolTip": "MyFamily\\Views\\Order\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-18T04:23:55.227Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "OrderController.cs",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Controllers\\OrderController.cs",
+              "RelativeDocumentMoniker": "MyFamily\\Controllers\\OrderController.cs",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Controllers\\OrderController.cs",
+              "RelativeToolTip": "MyFamily\\Controllers\\OrderController.cs",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAiwKIAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T04:43:56.546Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Configuration.cs",
+              "DocumentMoniker": "D:\\Family\\MyFamily\\MyFamily\\Migrations\\Configuration.cs",
+              "RelativeDocumentMoniker": "MyFamily\\Migrations\\Configuration.cs",
+              "ToolTip": "D:\\Family\\MyFamily\\MyFamily\\Migrations\\Configuration.cs",
+              "RelativeToolTip": "MyFamily\\Migrations\\Configuration.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAAAMAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T04:22:23.325Z"
             }
           ]
         }

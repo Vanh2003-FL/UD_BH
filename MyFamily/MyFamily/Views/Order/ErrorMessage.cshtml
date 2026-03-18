@@ -1,0 +1,51 @@
+@{
+    ViewBag.Title = "Thông Báo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .error-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: white;
+        border: 2px solid #e74c3c;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+
+    .error-message {
+        color: #2c3e50;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .back-button {
+        display: inline-block;
+        background-color: #4a7c59;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #3a6c49;
+    }
+</style>
+
+<div class="error-container">
+    <div class="error-icon">✅</div>
+    <div class="error-message">@ViewBag.ErrorMessage</div>
+    @Html.ActionLink("Quay Lại Danh Sách", "Index", new { }, new { @class = "back-button" })
+</div>

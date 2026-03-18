@@ -1,0 +1,206 @@
+@using MyFamily.Models
+@model List<Order>
+
+@{
+    ViewBag.Title = "Thống Kê";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .stats-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .page-title {
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    @@media (max-width: 1024px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .chart-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        border-top: 4px solid #4a7c59;
+    }
+
+    .chart-card h3 {
+        color: #4a7c59;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 350px;
+        margin-bottom: 10px;
+    }
+
+    .back-button {
+        display: inline-block;
+        background-color: #666;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #555;
+    }
+</style>
+
+<div class="stats-container">
+    <a href="@Url.Action("Index", "Home")" class="back-button">← Quay Lại Dashboard</a>
+
+    <h1 class="page-title">📊 Thống Kê Sản Phẩm & Doanh Thu</h1>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="charts-grid">
+            <!-- Chart 1: Product Sales Quantity -->
+            <div class="chart-card">
+                <h3>📦 Số Lượng Sản Phẩm Bán Được</h3>
+                <div class="chart-container">
+                    <canvas id="quantityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Revenue by Product -->
+            <div class="chart-card">
+                <h3>💰 Doanh Thu Theo Sản Phẩm</h3>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div style="background-color: white; padding: 30px; text-align: center; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <p style="color: #999; font-size: 16;">Chưa có dữ liệu để hiển thị thống kê</p>
+            <a href="@Url.Action("Create", "Order")" style="display: inline-block; background-color: #27ae60; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 15px;">Tạo Đơn Hàng Đầu Tiên</a>
+        </div>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+<script>
+    @if (Model != null && Model.Count > 0)
+    {
+        <text>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Chart 1: Product Sales Quantity
+                var productLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ProductLabels ?? new List<string>()));
+                var productQuantities = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ProductQuantities ?? new List<int>()));
+                
+                if (productLabels && productLabels.length > 0) {
+                    const quantityCtx = document.getElementById('quantityChart');
+                    if (quantityCtx) {
+                        const quantityChart = new Chart(quantityCtx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: productLabels,
+                                datasets: [{
+                                    label: 'Số Lượng (cái)',
+                                    data: productQuantities,
+                                    backgroundColor: '#3498db',
+                                    borderColor: '#2980b9',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                // Chart 2: Revenue by Product
+                var revenueLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.RevenueLabels ?? new List<string>()));
+                var revenueAmounts = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.RevenueAmounts ?? new List<long>()));
+                
+                if (revenueLabels && revenueLabels.length > 0) {
+                    const revenueCtx = document.getElementById('revenueChart');
+                    if (revenueCtx) {
+                        const revenueChart = new Chart(revenueCtx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: revenueLabels,
+                                datasets: [{
+                                    label: 'Doanh Thu (VND)',
+                                    data: revenueAmounts,
+                                    backgroundColor: '#27ae60',
+                                    borderColor: '#229954',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function(value) {
+                                                return value.toLocaleString('vi-VN');
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error creating charts:', error);
+            }
+        });
+        </text>
+    }
+</script>

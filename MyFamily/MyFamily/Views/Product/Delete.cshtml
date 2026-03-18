@@ -1,0 +1,118 @@
+@using MyFamily.Models
+@model Product
+
+@{
+    ViewBag.Title = "Xóa Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .delete-container {
+        max-width: 500px;
+        margin: 30px auto;
+        background-color: white;
+        border: 1px solid #e74c3c;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+    }
+
+    .delete-container h2 {
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .warning-message {
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 3px;
+        padding: 15px;
+        margin-bottom: 20px;
+        color: #856404;
+    }
+
+    .warning-message strong {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .product-info {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 3px;
+        margin-bottom: 20px;
+    }
+
+    .product-info p {
+        margin: 8px 0;
+        font-size: 14px;
+    }
+
+    .product-info strong {
+        color: #333;
+        font-weight: bold;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        flex: 1;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-delete {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #c0392b;
+    }
+
+    .btn-cancel {
+        background-color: #999;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #666;
+    }
+</style>
+
+<div class="delete-container">
+    <h2>⚠️ Xóa Sản Phẩm</h2>
+
+    <div class="warning-message">
+        <strong>Cảnh báo!</strong>
+        <p>Bạn có chắc muốn xóa sản phẩm này? Hành động này không thể hoàn tác.</p>
+    </div>
+
+    <div class="product-info">
+        <p><strong>Tên sản phẩm:</strong> @Model.ProductName</p>
+        <p><strong>Giá tiền:</strong> @Model.Price.ToString("N0") K</p>
+    </div>
+
+    @using (Html.BeginForm("Delete", "Product", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ProductId)
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-delete">Xóa Sản Phẩm</button>
+            @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-cancel" })
+        </div>
+    }
+</div>
