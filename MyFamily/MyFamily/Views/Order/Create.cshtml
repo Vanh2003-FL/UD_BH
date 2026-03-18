@@ -1,0 +1,148 @@
+@model Order
+
+@{
+    ViewBag.Title = "Tạo Đơn Hàng Mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-container {
+        max-width: 700px;
+        margin: 20px 0;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .form-container h2 {
+        color: #4a7c59;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 0 5px rgba(74, 124, 89, 0.3);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        flex: 1;
+    }
+
+    .btn-submit {
+        background-color: #4a7c59;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background-color: #3a6c49;
+    }
+
+    .btn-cancel {
+        background-color: #666;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #555;
+    }
+
+    .text-center {
+        text-align: center;
+        color: #666;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+</style>
+
+<div class="form-container">
+    <h2>@ViewBag.Title</h2>
+
+    @using (Html.BeginForm("Create", "Order", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerId, "Khách Hàng")
+            @Html.DropDownList("CustomerId", ViewBag.CustomerId as SelectList, "-- Chọn Khách Hàng --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotalAmount, "Tổng Tiền(K)")
+            @Html.TextBoxFor(model => model.TotalAmount, new { @type = "number", @step = "0.01", @placeholder = "Nhập tổng tiền" })
+            @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PaidAmount, "Tiền Đã Thu(K)")
+            @Html.TextBoxFor(model => model.PaidAmount, new { @type = "number", @step = "0.01", @placeholder = "Nhập tiền đã thu" })
+            @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DebtAmount, "Tiền Chưa Thu(K)")
+            @Html.TextBoxFor(model => model.DebtAmount, new { @type = "number", @step = "0.01", @placeholder = "Nhập tiền chưa thu" })
+            @Html.ValidationMessageFor(model => model.DebtAmount, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CostAmount, "Tiền Chi(K)")
+            @Html.TextBoxFor(model => model.CostAmount, new { @type = "number", @step = "0.01", @placeholder = "Nhập tiền chi" })
+            @Html.ValidationMessageFor(model => model.CostAmount, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProfitAmount, "Lãi(K)")
+            @Html.TextBoxFor(model => model.ProfitAmount, new { @type = "number", @step = "0.01", @placeholder = "Nhập lãi" })
+            @Html.ValidationMessageFor(model => model.ProfitAmount, "", new { @class = "error-message" })
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-submit">Tạo Đơn Hàng</button>
+            @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-cancel" })
+        </div>
+    }
+
+    <p class="text-center">Lưu ý: Ngày đặt hàng sẽ được tự động ghi nhận là hôm nay</p>
+</div>

@@ -1,0 +1,276 @@
+@model Order
+
+@{
+    ViewBag.Title = "Chi Tiết Đơn Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .detail-container {
+        max-width: 900px;
+        margin: 20px 0;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #4a7c59;
+        padding-bottom: 15px;
+    }
+
+    .detail-header h2 {
+        color: #4a7c59;
+        margin: 0;
+    }
+
+    .detail-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-left: 4px solid #4a7c59;
+        border-radius: 3px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .details-table th {
+        background-color: #4a7c59;
+        color: white;
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #333;
+    }
+
+    .details-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .details-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .amount-box {
+        background-color: #f0f8ff;
+        border: 1px solid #4a7c59;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .amount-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .amount-row:last-child {
+        border-bottom: none;
+    }
+
+    .amount-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .amount-value {
+        color: green;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .amount-value.negative {
+        color: red;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-edit {
+        background-color: #0066cc;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background-color: #0052a3;
+    }
+
+    .btn-delete {
+        background-color: #cc0000;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #990000;
+    }
+
+    .btn-back {
+        background-color: #666;
+        color: white;
+    }
+
+    .btn-back:hover {
+        background-color: #555;
+    }
+
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .status-paid {
+        background-color: #90EE90;
+        color: #006400;
+    }
+
+    .status-partial {
+        background-color: #FFD700;
+        color: #000;
+    }
+
+    .status-unpaid {
+        background-color: #FFB6C6;
+        color: #8B0000;
+    }
+</style>
+
+<div class="detail-container">
+    <div class="detail-header">
+        <h2>Chi Tiết Đơn Hàng #@Model.OrderId</h2>
+        @{
+            string statusClass = "status-unpaid";
+            string statusText = "Chưa Thanh Toán";
+
+            if (Model.PaidAmount >= Model.TotalAmount)
+            {
+                statusClass = "status-paid";
+                statusText = "Đã Thanh Toán";
+            }
+            else if (Model.PaidAmount > 0)
+            {
+                statusClass = "status-partial";
+                statusText = "Thanh Toán Một Phần";
+            }
+        }
+        <span class="status-badge @statusClass">@statusText</span>
+    </div>
+
+    <div class="detail-info">
+        <div class="info-item">
+            <div class="info-label">Khách Hàng</div>
+            <div class="info-value">@Model.Customer.Name</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Ngày Đặt</div>
+            <div class="info-value">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+    </div>
+
+    <h3 style="color: #4a7c59;">Danh Sách Sản Phẩm</h3>
+    @if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
+    {
+        <table class="details-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Giá(K)</th>
+                    <th>Số Lượng(KG)</th>
+                    <th>Tổng Tiền(K)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                    foreach (var detail in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@detail.Product.ProductName</td>
+                            <td>@detail.Price.ToString("N0")</td>
+                            <td>@detail.Quantity.ToString("N2")</td>
+                            <td>@(detail.Price * detail.Quantity).ToString("N0")</td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="color: #666;">Không có sản phẩm trong đơn hàng này.</p>
+    }
+
+    <div class="amount-box">
+        <h3 style="color: #4a7c59; margin-top: 0;">Thông Tin Thanh Toán</h3>
+        <div class="amount-row">
+            <span class="amount-label">Tổng Tiền Hàng:</span>
+            <span class="amount-value">@Model.TotalAmount.ToString("N0") K</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Đã Thu:</span>
+            <span class="amount-value">@Model.PaidAmount.ToString("N0") K</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Chưa Thu:</span>
+            <span class="amount-value negative">@Model.DebtAmount.ToString("N0") K</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Chi (Cost):</span>
+            <span class="amount-value">@Model.CostAmount.ToString("N0") K</span>
+        </div>
+        <div class="amount-row" style="border-bottom: 2px solid #4a7c59; padding-top: 15px; margin-top: 10px;">
+            <span class="amount-label" style="font-size: 16px;">Lãi Suất (Profit):</span>
+            <span class="amount-value @(Model.ProfitAmount >= 0 ? "" : "negative")" style="font-size: 16px;">@Model.ProfitAmount.ToString("N0") K</span>
+        </div>
+    </div>
+
+    <div class="button-group">
+        @Html.ActionLink("Sửa", "Edit", new { id = Model.OrderId }, new { @class = "btn btn-edit" })
+        @Html.ActionLink("Xóa", "Delete", new { id = Model.OrderId }, new { @class = "btn btn-delete" })
+        @Html.ActionLink("Quay Lại", "Index", null, new { @class = "btn btn-back" })
+    </div>
+</div>

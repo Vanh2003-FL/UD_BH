@@ -1,0 +1,210 @@
+@model List<Order>
+
+@{
+    ViewBag.Title = "Danh Sách Đơn Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    .order-table th {
+        background-color: #4a7c59;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #333;
+        font-weight: bold;
+    }
+
+    .order-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .order-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .order-table tr:hover {
+        background-color: #f0f0f0;
+    }
+
+    .amount-positive {
+        color: green;
+        font-weight: bold;
+    }
+
+    .amount-negative {
+        color: red;
+        font-weight: bold;
+    }
+
+    .status-paid {
+        background-color: #90EE90;
+        color: #006400;
+        padding: 4px 8px;
+        border-radius: 3px;
+    }
+
+    .status-partial {
+        background-color: #FFD700;
+        color: #000;
+        padding: 4px 8px;
+        border-radius: 3px;
+    }
+
+    .status-unpaid {
+        background-color: #FFB6C6;
+        color: #8B0000;
+        padding: 4px 8px;
+        border-radius: 3px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 11px;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .btn-view {
+        background-color: #4a7c59;
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: #0066cc;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #cc0000;
+        color: white;
+    }
+
+    .header-section {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-create {
+        background-color: #4a7c59;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 3px;
+        font-weight: bold;
+    }
+
+    .btn-create:hover {
+        background-color: #3a6c49;
+    }
+
+    h2 {
+        color: #4a7c59;
+        margin: 0;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+</style>
+
+<div class="header-section">
+    <h2>@ViewBag.Title</h2>
+    @Html.ActionLink("Tạo Đơn Hàng Mới", "Create", new { }, new { @class = "btn-create" })
+</div>
+
+@if (Model.Count > 0)
+{
+    <div class="table-container">
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên</th>
+                    <th>Ngày Đặt</th>
+                    <th>Danh Mục</th>
+                    <th>Giá(K)</th>
+                    <th>Số lượng(KG)</th>
+                    <th>Tiền(K)</th>
+                    <th>Trạng Thái</th>
+                    <th style="background-color: #00cc00; color: white;">Tiền Đã Thu(K)</th>
+                    <th style="background-color: #00cc00; color: white;">Tiền Chưa Thu(K)</th>
+                    <th style="background-color: #00cc00; color: white;">Tiền Chi(K)</th>
+                    <th style="background-color: #00cc00; color: white;">Lãi(K)</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                    foreach (var order in Model)
+                    {
+                        foreach (var detail in order.OrderDetails)
+                        {
+                            string statusClass = "status-unpaid";
+                            string statusText = "Chưa Thanh Toán";
+
+                            if (order.PaidAmount >= order.TotalAmount)
+                            {
+                                statusClass = "status-paid";
+                                statusText = "Đã Thanh Toán";
+                            }
+                            else if (order.PaidAmount > 0)
+                            {
+                                statusClass = "status-partial";
+                                statusText = "Thanh Toán Một Phần";
+                            }
+
+                            <tr>
+                                <td>@index</td>
+                                <td>@order.Customer.Name</td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                <td>@detail.Product.ProductName</td>
+                                <td>@detail.Price.ToString("N0")</td>
+                                <td>@detail.Quantity.ToString("N2")</td>
+                                <td class="amount-positive">@(detail.Price * detail.Quantity).ToString("N0")</td>
+                                <td><span class="@statusClass">@statusText</span></td>
+                                <td class="amount-positive">@order.PaidAmount.ToString("N0")</td>
+                                <td class="amount-negative">@order.DebtAmount.ToString("N0")</td>
+                                <td>@order.CostAmount.ToString("N0")</td>
+                                <td class="@(order.ProfitAmount >= 0 ? "amount-positive" : "amount-negative")">@order.ProfitAmount.ToString("N0")</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        @Html.ActionLink("Xem", "Details", new { id = order.OrderId }, new { @class = "btn-sm btn-view" })
+                                        @Html.ActionLink("Sửa", "Edit", new { id = order.OrderId }, new { @class = "btn-sm btn-edit" })
+                                        @Html.ActionLink("Xóa", "Delete", new { id = order.OrderId }, new { @class = "btn-sm btn-delete" })
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div style="text-align: center; padding: 20px; color: #666;">
+        <p>Không có đơn hàng nào. @Html.ActionLink("Tạo đơn hàng mới", "Create")</p>
+    </div>
+}
