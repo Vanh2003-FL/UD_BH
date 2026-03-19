@@ -7,6 +7,7 @@ using MyFamily.Models;
 
 namespace MyFamily.Controllers
 {
+    [CustomAuthorize]  // Require authentication for all Product operations
     public class ProductController : Controller
     {
         private MyDbContext db = new MyDbContext();

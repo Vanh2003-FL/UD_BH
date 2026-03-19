@@ -8,7 +8,7 @@ namespace MyFamily.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = false;
+            AutomaticMigrationDataLossAllowed = true;  // Allow automatic migrations to alter schema
         }
 
         protected override void Seed(MyDbContext context)

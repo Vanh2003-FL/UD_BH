@@ -6,6 +6,7 @@ using MyFamily.Models;
 
 namespace MyFamily.Controllers
 {
+    [CustomAuthorize]  // Require authentication
     public class OrderDetailController : Controller
     {
         private MyDbContext db = new MyDbContext();

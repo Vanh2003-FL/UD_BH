@@ -337,7 +337,26 @@
         <h3 style="color: #4a7c59; margin-top: 0;">Thông Tin Thanh Toán</h3>
         <div class="amount-row">
             <span class="amount-label">Tổng Tiền Hàng:</span>
-            <span class="amount-value">@Model.TotalAmount.ToString("N0") K</span>
+            <span class="amount-value">@Model.TotalAmount.ToString("N0") VND</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Đã Trả:</span>
+            <span class="amount-value" style="color: #388e3c;">@Model.PaidAmount.ToString("N0") VND</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Còn Thiếu:</span>
+            @if (Model.DebtAmount > 0)
+            {
+                <span class="amount-value" style="color: #d32f2f;">@Model.DebtAmount.ToString("N0") VND</span>
+            }
+            else if (Model.DebtAmount < 0)
+            {
+                <span class="amount-value" style="color: #0066cc;"> (Hoàn Lại) @Math.Abs(Model.DebtAmount).ToString("N0") VND</span>
+            }
+            else
+            {
+                <span class="amount-value" style="color: #388e3c;">0 VND</span>
+            }
         </div>
     </div>
 
@@ -360,7 +379,7 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="newStatus" value="delivered" />
                         <span style="font-size: 14px; color: #555; font-weight: 500;">Đánh dấu hàng đã được giao cho khách hàng</span>
-                        <button type="submit" class="btn-status btn-delivered">🚚 Đã Giao Hàn</button>
+                        <button type="submit" class="btn-status btn-delivered">🚚 Đã Giao Hàng</button>
                     </div>
                 }
             }

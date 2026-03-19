@@ -9,6 +9,7 @@ using MyFamily.Models;
 
 namespace MyFamily.Controllers
 {
+    [CustomAuthorize]  // Require authentication for all actions in this controller
     public class HomeController : Controller
     {
         private MyDbContext db = new MyDbContext();
@@ -73,6 +74,7 @@ namespace MyFamily.Controllers
             return View(orders);
         }
 
+        [CustomAuthorize]
         public ActionResult About()
         {
             ViewBag.Message = "Thông Tin Thanh Toán";
@@ -86,6 +88,7 @@ namespace MyFamily.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize]
         public ActionResult About(HttpPostedFileBase qrCodeFile)
         {
             ViewBag.Message = "Thông Tin Thanh Toán";

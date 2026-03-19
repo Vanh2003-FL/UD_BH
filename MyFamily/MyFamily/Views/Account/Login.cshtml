@@ -1,0 +1,85 @@
+@{
+    ViewBag.Title = "Đăng Nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Đăng Nhập</h2>
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            @ViewBag.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @ViewBag.Error
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-login" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" name="username" required placeholder="Nhập tên đăng nhập">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="Nhập mật khẩu">
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Ghi nhớ tôi
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Đăng Nhập</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        font-weight: 600;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+</style>

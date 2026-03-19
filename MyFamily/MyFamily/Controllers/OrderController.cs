@@ -9,6 +9,7 @@ using MyFamily.Models;
 
 namespace MyFamily.Controllers
 {
+    [CustomAuthorize]  // Require authentication for all Order operations
     public class OrderController : Controller
     {
         private MyDbContext db = new MyDbContext();
@@ -49,8 +50,8 @@ namespace MyFamily.Controllers
                 string normalizedSearch = RemoveDiacritics(search).ToLower();
                 
                 orders = orders.Where(o => 
-                    RemoveDiacritics(o.Customer.Name).ToLower().Contains(normalizedSearch) || 
-                    o.OrderDetails.Any(d => RemoveDiacritics(d.Product.ProductName).ToLower().Contains(normalizedSearch))
+                    (o.Customer != null && RemoveDiacritics(o.Customer.Name).ToLower().Contains(normalizedSearch)) || 
+                    (o.OrderDetails != null && o.OrderDetails.Any(d => d.Product != null && RemoveDiacritics(d.Product.ProductName).ToLower().Contains(normalizedSearch)))
                 ).ToList();
             }
 
@@ -261,10 +262,14 @@ namespace MyFamily.Controllers
 
             try
             {
+                // Track if any modifications were made to products
+                bool hasProductModifications = false;
+                
                 // 1. Xóa sản phẩm bị đánh dấu xóa
                 string removedIds = collection["removedDetailIds"];
                 if (!string.IsNullOrEmpty(removedIds))
                 {
+                    hasProductModifications = true;
                     var idsToRemove = removedIds.Split(new char[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries)
                         .Select(id_str => {
                             int parsedId;
@@ -312,6 +317,11 @@ namespace MyFamily.Controllers
                     var detail = order.OrderDetails.FirstOrDefault(d => d.OrderDetailId == orderDetailId);
                     if (detail != null && newQuantity > 0)
                     {
+                        // Check if quantity changed
+                        if (detail.Quantity != newQuantity)
+                        {
+                            hasProductModifications = true;
+                        }
                         detail.Quantity = newQuantity;
                     }
                 }
@@ -321,6 +331,11 @@ namespace MyFamily.Controllers
                 var newProductKeys = collection.Keys.Cast<string>()
                     .Where(k => k.StartsWith("newProducts[") && k.EndsWith("].ProductId"))
                     .ToList();
+
+                if (newProductKeys.Count > 0)
+                {
+                    hasProductModifications = true;
+                }
 
                 foreach (var key in newProductKeys)
                 {
@@ -369,6 +384,27 @@ namespace MyFamily.Controllers
                 }
                 order.TotalAmount = newTotalAmount;
                 order.DebtAmount = order.TotalAmount - order.PaidAmount;
+
+                // 5. Determine payment status based on TotalAmount vs PaidAmount
+                bool isDelivered = order.Status == OrderStatus.DeliveredNotPaid || 
+                                   order.Status == OrderStatus.DeliveredPaid;
+                
+                if (order.PaidAmount >= order.TotalAmount && order.TotalAmount > 0)
+                {
+                    // Fully paid (or overpaid) - set to paid status
+                    // Keep the actual DebtAmount (will be negative if overpaid = refund amount)
+                    order.Status = isDelivered ? OrderStatus.DeliveredPaid : OrderStatus.PendingPaid;
+                }
+                else if (order.PaidAmount > 0)
+                {
+                    // Partially paid - keep as unpaid status
+                    order.Status = isDelivered ? OrderStatus.DeliveredNotPaid : OrderStatus.PendingNotPaid;
+                }
+                else
+                {
+                    // Not paid at all - ensure status is unpaid
+                    order.Status = isDelivered ? OrderStatus.DeliveredNotPaid : OrderStatus.PendingNotPaid;
+                }
 
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -464,11 +500,19 @@ namespace MyFamily.Controllers
                             break;
                         
                         case "paid":
-                            // Mark as paid
+                            // Mark as paid - set PaidAmount = TotalAmount if not already set
                             if (order.Status == OrderStatus.PendingNotPaid)
+                            {
                                 order.Status = OrderStatus.PendingPaid;
+                                order.PaidAmount = order.TotalAmount;
+                                order.DebtAmount = 0;
+                            }
                             else if (order.Status == OrderStatus.DeliveredNotPaid)
+                            {
                                 order.Status = OrderStatus.DeliveredPaid;
+                                order.PaidAmount = order.TotalAmount;
+                                order.DebtAmount = 0;
+                            }
                             break;
                     }
                     

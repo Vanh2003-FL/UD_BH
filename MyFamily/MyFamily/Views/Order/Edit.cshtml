@@ -171,6 +171,28 @@
             <strong>Khách Hàng:</strong> @Model.Customer.Name
         </div>
 
+        <div class="order-id-info" style="background-color: #e8f5e9; border-left-color: #27ae60;">
+            <h4 style="color: #27ae60; margin: 0 0 10px 0;">💰 Thông Tin Thanh Toán</h4>
+            <strong>Tổng Tiền Hàng:</strong> <span style="color: #d32f2f; font-weight: bold;" class="payment-total-amount">@Model.TotalAmount.ToString("N0")</span> VND
+            <br />
+            <strong>Tiền Đã Trả:</strong> <span style="color: #388e3c; font-weight: bold;">@Model.PaidAmount.ToString("N0")</span> VND
+            <br />
+            <strong>Tiền Còn Thiếu:</strong> 
+            @if (Model.DebtAmount > 0)
+            {
+                <span style="color: #d32f2f; font-weight: bold;" class="payment-debt-amount">@Model.DebtAmount.ToString("N0")</span>
+            }
+            else if (Model.DebtAmount < 0)
+            {
+                <span class="refund-label" style="color: #0066cc; font-weight: bold;">(Hoàn Lại) </span><span style="color: #0066cc; font-weight: bold;" class="payment-debt-amount">@Math.Abs(Model.DebtAmount).ToString("N0")</span>
+            }
+            else
+            {
+                <span style="color: #388e3c; font-weight: bold;" class="payment-debt-amount">0</span>
+            }
+            VND
+        </div>
+
         @Html.HiddenFor(model => model.OrderId)
         @Html.HiddenFor(model => model.OrderDate)
         @Html.HiddenFor(model => model.CustomerId)
@@ -203,12 +225,19 @@
                             <tr id="existing-product-row-@detail.OrderDetailId">
                                 <td>@index</td>
                                 <td>@detail.Product.ProductName</td>
-                                <td>@detail.Price.ToString("N0")</td>
+                                <td class="product-price" data-price="@detail.Price">@detail.Price.ToString("N0")</td>
                                 <td>
-                                    <input type="number" name="quantities[@index-1]" value="@detail.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)" step="0.01" min="0" style="width: 100px; padding: 5px;" />
+                                    <input type="number" name="quantities[@index-1]" 
+                                           value="@detail.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)" 
+                                           step="0.01" min="0" style="width: 100px; padding: 5px;"
+                                           class="quantity-input-existing"
+                                           data-index="@index-1"
+                                           data-product-id="@detail.OrderDetailId"
+                                           data-price="@detail.Price"
+                                           onchange="updateExistingProductTotal(this)" />
                                     <input type="hidden" name="orderDetailIds[@index-1]" value="@detail.OrderDetailId" />
                                 </td>
-                                <td>@totalPrice.ToString("N0")</td>
+                                <td class="product-total-@detail.OrderDetailId">@totalPrice.ToString("N0")</td>
                                 <td>
                                     <button type="button" class="btn-remove" onclick="removeExistingProduct(@detail.OrderDetailId)">Xóa</button>
                                 </td>
@@ -311,6 +340,7 @@
                 var row = document.getElementById('new-product-row-' + index);
                 if (row) {
                     row.remove();
+                    recalculateOverallTotal();
                 }
             }
 
@@ -319,6 +349,7 @@
                     var row = document.getElementById('existing-product-row-' + orderDetailId);
                     if (row) {
                         row.style.display = 'none';
+                        recalculateOverallTotal();
                     }
                     removedOrderDetailIds.push(orderDetailId);
                     
@@ -364,6 +395,103 @@
                 var total = price * quantity;
                 
                 totalSpan.textContent = total.toFixed(0);
+                
+                // Update overall payment summary
+                recalculateOverallTotal();
+            }
+
+            function calculateNewTotal() {
+                // Get initial total from hidden field
+                var initialTotal = parseFloat(document.querySelector('input[name="TotalAmount"]').value) || 0;
+                
+                // This will be recalculated on server side when form is submitted
+                // For now, we just show the current display
+                return initialTotal;
+            }
+
+            function updatePaymentSummary() {
+                // Note: Real-time calculation happens on server when form is submitted
+                // This function is a placeholder for future enhancement
+                // The payment summary will show actual values after form submission
+            }
+
+            function updateExistingProductTotal(input) {
+                var productId = input.getAttribute('data-product-id');
+                var price = parseFloat(input.getAttribute('data-price')) || 0;
+                var quantity = parseFloat(input.value) || 0;
+                var total = price * quantity;
+                
+                // Update the total for this product row
+                var totalCell = document.querySelector('.product-total-' + productId);
+                if (totalCell) {
+                    totalCell.textContent = total.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
+                }
+                
+                // Recalculate overall total
+                recalculateOverallTotal();
+            }
+
+            function recalculateOverallTotal() {
+                var newTotalAmount = 0;
+                
+                // Sum all existing product quantities and prices
+                var existingInputs = document.querySelectorAll('.quantity-input-existing');
+                existingInputs.forEach(function(input) {
+                    var price = parseFloat(input.getAttribute('data-price')) || 0;
+                    var quantity = parseFloat(input.value) || 0;
+                    newTotalAmount += (price * quantity);
+                });
+                
+                // Sum all new products being added
+                var newProductRows = document.querySelectorAll('#newProductsBody tr');
+                newProductRows.forEach(function(row) {
+                    var priceInput = row.querySelector('.price-input');
+                    var quantityInput = row.querySelector('.quantity-input');
+                    if (priceInput && quantityInput) {
+                        var price = parseFloat(priceInput.value) || 0;
+                        var quantity = parseFloat(quantityInput.value) || 0;
+                        newTotalAmount += (price * quantity);
+                    }
+                });
+                
+                // Update the hidden TotalAmount field
+                document.querySelector('input[name="TotalAmount"]').value = newTotalAmount;
+                
+                // Update the displayed total in the payment summary
+                var paidAmount = parseFloat(document.querySelector('input[name="PaidAmount"]').value) || 0;
+                var debtAmount = newTotalAmount - paidAmount;
+                
+                // Update the display
+                var totalDisplay = document.querySelector('.payment-total-amount');
+                if (totalDisplay) {
+                    totalDisplay.textContent = newTotalAmount.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
+                }
+                
+                var debtDisplay = document.querySelector('.payment-debt-amount');
+                if (debtDisplay) {
+                    debtDisplay.textContent = debtAmount.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
+                    if (debtAmount > 0) {
+                        debtDisplay.style.color = '#d32f2f';
+                        if (debtDisplay.parentElement.querySelector('.refund-label')) {
+                            debtDisplay.parentElement.querySelector('.refund-label').style.display = 'none';
+                        }
+                    } else if (debtAmount < 0) {
+                        debtDisplay.style.color = '#0066cc';
+                        var refundLabel = document.createElement('span');
+                        refundLabel.className = 'refund-label';
+                        refundLabel.textContent = '(Hoàn Lại) ';
+                        if (debtDisplay.parentElement.querySelector('.refund-label')) {
+                            debtDisplay.parentElement.querySelector('.refund-label').textContent = '(Hoàn Lại) ';
+                        } else {
+                            debtDisplay.parentElement.insertBefore(refundLabel, debtDisplay);
+                        }
+                    } else {
+                        debtDisplay.style.color = '#388e3c';
+                        if (debtDisplay.parentElement.querySelector('.refund-label')) {
+                            debtDisplay.parentElement.querySelector('.refund-label').style.display = 'none';
+                        }
+                    }
+                }
             }
         </script>
 

@@ -232,7 +232,7 @@
 
 <div class="filter-section">
     <h3>🔍 Tìm Kiếm & Lọc Đơn Hàng</h3>
-    @using (Html.BeginForm("Index", "Order", FormMethod.Get))
+    @using (Html.BeginForm("Index", "Order", FormMethod.Get, new { id = "filterForm" }))
     {
         <div class="filter-row">
             <div class="filter-group" style="grid-column: span 2;">
@@ -242,7 +242,7 @@
 
             <div class="filter-group">
                 <label for="filterStatus">Trạng Thái</label>
-                <select id="filterStatus" name="filterStatus">
+                <select id="filterStatus" name="filterStatus" onchange="document.getElementById('filterForm').submit();">
                     <option value="">-- Tất Cả Trạng Thái --</option>
                     <option value="PendingNotPaid" @(ViewBag.FilterStatus == "PendingNotPaid" ? "selected" : "")>❌ Chưa Lãy (Chưa Trả)</option>
                     <option value="PendingPaid" @(ViewBag.FilterStatus == "PendingPaid" ? "selected" : "")>❌ Chưa Lãy (Đã Trả)</option>
@@ -282,6 +282,8 @@
                     <th>Ngày Đặt</th>
                     <th>Sản Phẩm</th>
                     <th>Tổng Tiền(VND)</th>
+                    <th>Tiền Đã Trả(VND)</th>
+                    <th>Tiền Còn Thiếu(VND)</th>
                     <th>Trạng Thái</th>
                     <th>Thao Tác</th>
                 </tr>
@@ -332,6 +334,21 @@
                             <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
                             <td>@productSummary</td>
                             <td class="amount-positive">@order.TotalAmount.ToString("N0")</td>
+                            <td class="amount-positive">@order.PaidAmount.ToString("N0")</td>
+                            <td>
+                                @if (order.DebtAmount > 0)
+                                {
+                                    <span class="amount-negative">@order.DebtAmount.ToString("N0")</span>
+                                }
+                                else if (order.DebtAmount < 0)
+                                {
+                                    <span style="color: #0066cc; font-weight: bold;">(Hoàn Lại) @Math.Abs(order.DebtAmount).ToString("N0")</span>
+                                }
+                                else
+                                {
+                                    <span class="amount-positive">0</span>
+                                }
+                            </td>
                             <td><span class="@statusClass">@statusText</span></td>
                             <td>
                                 <div class="action-buttons">
