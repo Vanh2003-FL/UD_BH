@@ -81,3 +81,5 @@ D:\Family\MyFamily\MyFamily\obj\Debug\MyFamily.csproj.CoreCompileInputs.cache
 D:\Family\MyFamily\MyFamily\obj\Debug\MyFamily.csproj.Up2Date
 D:\Family\MyFamily\MyFamily\obj\Debug\MyFamily.dll
 D:\Family\MyFamily\MyFamily\obj\Debug\MyFamily.pdb
+D:\Family\MyFamily\MyFamily\obj\Debug\MyFamily.Migrations.Init.resources
+D:\Family\MyFamily\MyFamily\obj\Debug\MyFamily.csproj.GenerateResource.cache

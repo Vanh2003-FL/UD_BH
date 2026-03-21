@@ -1,0 +1,136 @@
+﻿@{
+    var username = "";
+    if (Request.IsAuthenticated)
+    {
+        var ticket = HttpContext.Current.User.Identity.Name;
+        if (!string.IsNullOrEmpty(ticket))
+        {
+            var parts = ticket.Split('|');
+            if (parts.Length > 0)
+            {
+                username = parts[0];
+            }
+        }
+    }
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MyFamily Business Management</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 18px;
+            color: #fff !important;
+        }
+        .navbar-dark {
+            background-color: #2c3e50 !important;
+        }
+        .nav-link {
+            margin-left: 10px !important;
+            margin-right: 10px !important;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #00cc00 !important;
+        }
+        .nav-link.active {
+            color: #00cc00 !important;
+            border-bottom: 2px solid #00cc00;
+        }
+        .body-content {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            flex: 1;
+        }
+        .body-content.container {
+            max-width: 1000px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-top: auto;
+            text-align: center;
+            width: 100%;
+        }
+        .dropdown-menu {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .dropdown-item {
+            color: #333;
+            transition: all 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #e9ecef;
+            color: #4a7c59;
+        }
+        .dropdown-item:focus {
+            background-color: #e9ecef;
+            color: #4a7c59;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("MyFamily", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@Html.ActionLink("Dashboard", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Đơn Hàng", "Index", "Order", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Sản Phẩm", "Index", "Product", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("QR", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Liên Hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                @if (Request.IsAuthenticated)
+                {
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item" style="display: flex; align-items: center; margin-right: 20px;">
+                            <span style="color: white; font-weight: 500;">👤 @username</span>
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("🚪 Đăng Xuất", "Logout", "Account", null, new { @class = "nav-link", style = "font-size: 16px; font-weight: 500;" })
+                        </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="navbar-nav ms-auto">
+                        <li>
+                            @Html.ActionLink("Đăng Nhập", "Login", "Account", new { area = "" }, new { @class = "nav-link" })
+                        </li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Sản Phẩm Phát Triển Bởi Nguyễn Văn Việt Anh</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

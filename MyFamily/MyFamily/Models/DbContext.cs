@@ -5,7 +5,7 @@ namespace MyFamily.Models
 {
     public class MyDbContext : DbContext
     {
-        public MyDbContext() : base("MyDb") 
+        public MyDbContext() : base("DefaultConnection") 
         { 
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MyDbContext, MyFamily.Migrations.Configuration>());
         }

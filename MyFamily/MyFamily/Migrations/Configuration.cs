@@ -17,7 +17,7 @@ namespace MyFamily.Migrations
                 new User
                 {
                     Username = "admin",
-                    Password = "123456",
+                    Password = "admin",
                     Role = "Admin"
                 });
         }

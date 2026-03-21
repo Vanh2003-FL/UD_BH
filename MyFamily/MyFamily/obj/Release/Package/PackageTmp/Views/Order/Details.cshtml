@@ -1,0 +1,414 @@
+@using MyFamily.Models
+@model Order
+
+@{
+    ViewBag.Title = "Chi Tiết Đơn Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .detail-container {
+        max-width: 900px;
+        margin: 20px 0;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #4a7c59;
+        padding-bottom: 15px;
+    }
+
+    .detail-header h2 {
+        color: #4a7c59;
+        margin: 0;
+    }
+
+    .detail-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-left: 4px solid #4a7c59;
+        border-radius: 3px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .details-table th {
+        background-color: #4a7c59;
+        color: white;
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #333;
+    }
+
+    .details-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .details-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .amount-box {
+        background-color: #f0f8ff;
+        border: 1px solid #4a7c59;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .amount-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .amount-row:last-child {
+        border-bottom: none;
+    }
+
+    .amount-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .amount-value {
+        color: green;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .amount-value.negative {
+        color: red;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-edit {
+        background-color: #0066cc;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background-color: #0052a3;
+    }
+
+    .btn-delete {
+        background-color: #cc0000;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #990000;
+    }
+
+    .btn-back {
+        background-color: #666;
+        color: white;
+    }
+
+    .btn-back:hover {
+        background-color: #555;
+    }
+
+    .status-badge {
+        padding: 12px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+        font-size: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .status-paid {
+        background-color: #27ae60;
+        color: white;
+        border: 2px solid #1e8449;
+    }
+
+    .status-partial {
+        background-color: #f39c12;
+        color: white;
+        border: 2px solid #d68910;
+    }
+
+    .status-unpaid {
+        background-color: #e74c3c;
+        color: white;
+        border: 2px solid #c0392b;
+    }
+
+    .status-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border: 2px solid #4a7c59;
+        border-radius: 8px;
+        padding: 25px;
+        margin: 20px 0;
+    }
+
+    .status-title {
+        color: #4a7c59;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .status-label {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .btn-status {
+        padding: 15px 25px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .btn-status:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn-delivered {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .btn-delivered:hover {
+        background-color: #229954;
+    }
+
+    .btn-paid {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-paid:hover {
+        background-color: #2980b9;
+    }
+
+    .completion-message {
+        background-color: #d5f4e6;
+        border: 2px solid #27ae60;
+        color: #27ae60;
+        padding: 15px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+
+<div class="detail-container">
+    <div class="detail-header">
+        <h2>Chi Tiết Đơn Hàng #@Model.OrderId</h2>
+        @{
+            string statusClass = "status-unpaid";
+            string statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+
+            switch (Model.Status)
+            {
+                case MyFamily.Models.OrderStatus.PendingPaid:
+                    statusClass = "status-partial";
+                    statusText = "❌ Chưa Lãy (Đã Trả Tiền)";
+                    break;
+                case MyFamily.Models.OrderStatus.DeliveredNotPaid:
+                    statusClass = "status-partial";
+                    statusText = "✅ Đã Lãy (Chưa Trả Tiền)";
+                    break;
+                case MyFamily.Models.OrderStatus.DeliveredPaid:
+                    statusClass = "status-paid";
+                    statusText = "✅ Đã Lãy (Đã Trả Tiền)";
+                    break;
+                default:
+                    statusClass = "status-unpaid";
+                    statusText = "❌ Chưa Lãy (Chưa Trả Tiền)";
+                    break;
+            }
+        }
+        <div>
+            <span class="status-label">Trạng Thái Hiện Tại:</span>
+            <span class="status-badge @statusClass">@statusText</span>
+        </div>
+    </div>
+
+    <div class="detail-info">
+        <div class="info-item">
+            <div class="info-label">Khách Hàng</div>
+            <div class="info-value">@Model.Customer.Name</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Ngày Đặt</div>
+            <div class="info-value">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+    </div>
+
+    <h3 style="color: #4a7c59;">Danh Sách Sản Phẩm</h3>
+    @if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
+    {
+        <table class="details-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Giá(VND)</th>
+                    <th>Số Lượng(KG)</th>
+                    <th>Tổng Tiền(VND)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                    foreach (var detail in Model.OrderDetails)
+                    {
+                        var totalPrice = detail.Price * detail.Quantity;
+                        <tr>
+                            <td>@index</td>
+                            <td>@detail.Product.ProductName</td>
+                            <td>@detail.Price.ToString("N0")</td>
+                            <td>@detail.Quantity.ToString("0.##")</td>
+                            <td>@totalPrice.ToString("N0")</td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p style="color: #666;">Không có sản phẩm trong đơn hàng này.</p>
+    }
+
+    <div class="amount-box">
+        <h3 style="color: #4a7c59; margin-top: 0;">Thông Tin Thanh Toán</h3>
+        <div class="amount-row">
+            <span class="amount-label">Tổng Tiền Hàng:</span>
+            <span class="amount-value">@Model.TotalAmount.ToString("N0") VND</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Đã Trả:</span>
+            <span class="amount-value" style="color: #388e3c;">@Model.PaidAmount.ToString("N0") VND</span>
+        </div>
+        <div class="amount-row">
+            <span class="amount-label">Tiền Còn Thiếu:</span>
+            @if (Model.DebtAmount > 0)
+            {
+                <span class="amount-value" style="color: #d32f2f;">@Model.DebtAmount.ToString("N0") VND</span>
+            }
+            else if (Model.DebtAmount < 0)
+            {
+                <span class="amount-value" style="color: #0066cc;"> (Hoàn Lại) @Math.Abs(Model.DebtAmount).ToString("N0") VND</span>
+            }
+            else
+            {
+                <span class="amount-value" style="color: #388e3c;">0 VND</span>
+            }
+        </div>
+    </div>
+
+    <div class="status-section">
+        <div class="status-title">🔄 Cập Nhật Trạng Thái Đơn Hàng</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+            @{
+                bool isDelivered = Model.Status == MyFamily.Models.OrderStatus.DeliveredNotPaid || 
+                                   Model.Status == MyFamily.Models.OrderStatus.DeliveredPaid;
+                bool isPaid = Model.Status == MyFamily.Models.OrderStatus.PendingPaid || 
+                             Model.Status == MyFamily.Models.OrderStatus.DeliveredPaid;
+                bool isCompleted = (bool)(ViewBag.IsCompleted ?? false);
+            }
+            
+            @if (!isDelivered && !isCompleted)
+            {
+                using (Html.BeginForm("UpdateStatus", "Order", new { id = Model.OrderId }, FormMethod.Post))
+                {
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="newStatus" value="delivered" />
+                        <span style="font-size: 14px; color: #555; font-weight: 500;">Đánh dấu hàng đã được giao cho khách hàng</span>
+                        <button type="submit" class="btn-status btn-delivered">🚚 Đã Giao Hàng</button>
+                    </div>
+                }
+            }
+            
+            @if (!isPaid && !isCompleted)
+            {
+                using (Html.BeginForm("UpdateStatus", "Order", new { id = Model.OrderId }, FormMethod.Post))
+                {
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="newStatus" value="paid" />
+                        <span style="font-size: 14px; color: #555; font-weight: 500;">Xác nhận khách hàng đã thanh toán đầy đủ</span>
+                        <button type="submit" class="btn-status btn-paid">💰 Đã Trả Tiền</button>
+                    </div>
+                }
+            }
+            
+            @if (isDelivered && isPaid)
+            {
+                <div class="completion-message">
+                    ✅ Đơn hàng đã hoàn thành thành công!
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="button-group">
+        @Html.ActionLink("Sửa", "Edit", new { id = Model.OrderId }, new { @class = "btn btn-edit" })
+        @Html.ActionLink("Xóa", "Delete", new { id = Model.OrderId }, new { @class = "btn btn-delete" })
+        @Html.ActionLink("Quay Lại", "Index", null, new { @class = "btn btn-back" })
+    </div>
+</div>

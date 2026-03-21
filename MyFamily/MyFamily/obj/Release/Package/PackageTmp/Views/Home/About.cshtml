@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Thông Tin Thanh Toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .about-container {
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .page-title {
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .qr-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .qr-section h2 {
+        color: #4a7c59;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 20px;
+    }
+
+    .qr-display {
+        text-align: center;
+        margin-bottom: 25px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        border: 2px dashed #ddd;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .qr-display img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 5px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-qr-message {
+        color: #999;
+        font-size: 14px;
+        font-style: italic;
+    }
+
+    .upload-form {
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+        margin-top: 20px;
+    }
+
+    .upload-form h3 {
+        color: #4a7c59;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .form-group input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group input[type="file"]:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 0 5px rgba(74, 124, 89, 0.3);
+    }
+
+    .btn-submit {
+        background-color: #27ae60;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #229954;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
+    .file-info {
+        color: #666;
+        font-size: 12px;
+        margin-top: 8px;
+    }
+</style>
+
+<div class="about-container">
+    <h1 class="page-title">💳 @ViewBag.Title</h1>
+
+    <div class="qr-section">
+        <h2>🔍 Mã QR Thanh Toán</h2>
+
+        <div class="qr-display">
+            @if (ViewBag.QRCodeExists)
+            {
+                <img src="~/Uploads/qr-code.png?t=@DateTime.Now.Ticks" alt="QR Code Thanh Toán" />
+            }
+            else
+            {
+                <p class="no-qr-message">Chưa có mã QR. Vui lòng tải lên mã QR thanh toán.</p>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage as string))
+        {
+            <div class="alert alert-success">
+                ✅ @ViewBag.SuccessMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(ViewBag.Message as string) && ViewBag.Message != "Thông Tin Thanh Toán")
+        {
+            <div class="alert alert-danger">
+                ❌ @ViewBag.Message
+            </div>
+        }
+
+        <div class="upload-form">
+            <h3>📤 Tải Lên Mã QR Mới</h3>
+            
+            @using (Html.BeginForm("About", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                
+                <div class="form-group">
+                    <label for="qrCodeFile">Chọn ảnh mã QR:</label>
+                    <input type="file" id="qrCodeFile" name="qrCodeFile" accept=".png,.jpg,.jpeg,.gif" required />
+                    <div class="file-info">Định dạng: PNG, JPG, JPEG, GIF (Kích thước tối đa: 5MB)</div>
+                </div>
+
+                <button type="submit" class="btn-submit">📤 Tải Lên Mã QR</button>
+            }
+        </div>
+    </div>
+
+    <div class="qr-section">
+        <h2>ℹ️ Thông tin chuyển khoản</h2>
+        <ol>
+            <li>Ngân Hàng: MBBANK</li>
+            <li>STK: 0399215503</li>
+            <li>Tên: NGUYEN THI CHI</li>
+        </ol>
+        
+    </div>
+</div>

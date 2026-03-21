@@ -1,0 +1,146 @@
+@using MyFamily.Models
+@model Product
+
+@{
+    ViewBag.Title = "Chỉnh Sửa Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-container {
+        max-width: 500px;
+        margin: 30px auto;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+        color: #4a7c59;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .form-group input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 0 5px rgba(74, 124, 89, 0.3);
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        flex: 1;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-submit {
+        background-color: #4a7c59;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background-color: #3a6c49;
+    }
+
+    .btn-cancel {
+        background-color: #999;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #666;
+    }
+
+    .price-info {
+        background-color: #f0f7ff;
+        border-left: 4px solid #3498db;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 3px;
+    }
+
+    .price-info strong {
+        color: #27ae60;
+        font-size: 18px;
+    }
+
+    .form-hint {
+        color: #999;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-container">
+    <h2>✏️ Chỉnh Sửa Sản Phẩm</h2>
+
+    <div class="price-info">
+        <p>Sản phẩm hiện tại: <strong>@Model.ProductName</strong></p>
+        <p>Giá hiện tại: <strong>@Model.Price.ToString("N0") K</strong></p>
+    </div>
+
+    @using (Html.BeginForm("Edit", "Product", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.ProductId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProductName, "Tên Sản Phẩm")
+            @Html.TextBoxFor(model => model.ProductName, new { placeholder = "Nhập tên sản phẩm", required = "required" })
+            @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price, "Giá Mới(VND)")
+            @Html.TextBoxFor(model => model.Price, new { type = "number", @step = "0.01", placeholder = "Nhập giá tiền mới", required = "required" })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "error-message" })
+            <p class="form-hint">Nhập giá tính theo đơn vị VND</p>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-submit">Lưu Thay Đổi</button>
+            @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-cancel" })
+        </div>
+    }
+</div>

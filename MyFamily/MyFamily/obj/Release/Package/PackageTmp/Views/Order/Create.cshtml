@@ -1,0 +1,323 @@
+@using MyFamily.Models
+@model Order
+
+@{
+    ViewBag.Title = "Tạo Đơn Hàng Mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-container {
+        width: 100%;
+        max-width: 700px;
+        margin: 20px auto;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .form-container h2 {
+        color: #4a7c59;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 0 5px rgba(74, 124, 89, 0.3);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        flex: 1;
+    }
+
+    .btn-submit {
+        background-color: #4a7c59;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background-color: #3a6c49;
+    }
+
+    .btn-cancel {
+        background-color: #666;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #555;
+    }
+
+    .text-center {
+        text-align: center;
+        color: #666;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+
+    .products-section {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #eee;
+    }
+
+    .products-section h3 {
+        color: #4a7c59;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+
+    .products-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        font-size: 13px;
+    }
+
+    .products-table th {
+        background-color: #f5f5f5;
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .products-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .products-table input {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+    }
+
+    .products-table select {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+    }
+
+    .btn-add-product {
+        background-color: #27ae60;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .btn-add-product:hover {
+        background-color: #229954;
+    }
+
+    .btn-remove {
+        background-color: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btn-remove:hover {
+        background-color: #c0392b;
+    }
+
+</style>
+
+<div class="form-container">
+    <h2>@ViewBag.Title</h2>
+
+    @using (Html.BeginForm("Create", "Order", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerId, "Khách Hàng")
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <select name="CustomerId" id="customerSelect" class="form-control" style="flex: 1;">
+                    <option value="">-- Chọn Khách Hàng Cũ --</option>
+                    @{
+                        var selectList = ViewBag.CustomerId as SelectList;
+                        if (selectList != null)
+                        {
+                            foreach (var item in selectList)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    }
+                </select>
+                <input type="text" id="newCustomerName" placeholder="Hoặc nhập tên khách mới" class="form-control" style="flex: 1;" />
+            </div>
+            <p style="color: #999; font-size: 12px; margin: 0;">Nếu nhập tên mới, khách hàng sẽ được tạo tự động</p>
+        </div>
+
+        <div class="products-section">
+            <h3>📦 Thêm Sản Phẩm vào Đơn Hàng</h3>
+            <button type="button" class="btn-add-product" onclick="addProductRow()">+ Thêm Sản Phẩm</button>
+            
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Sản Phẩm</th>
+                        <th>Giá(VND)</th>
+                        <th>Số Lượng(KG)</th>
+                        <th>Tổng Tiền(VND)</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="productsBody">
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            var productCount = 0;
+            var allProducts = @Html.Raw(Json.Encode(ViewBag.AllProducts ?? new List<Product>()));
+
+            function addProductRow() {
+                var tbody = document.getElementById('productsBody');
+                var newRow = document.createElement('tr');
+                newRow.id = 'product-row-' + productCount;
+                
+                var productOptions = '<option value="">-- Chọn Sản Phẩm --</option>';
+                if (allProducts && allProducts.length > 0) {
+                    for (var i = 0; i < allProducts.length; i++) {
+                        productOptions += '<option value="' + allProducts[i].ProductId + '">' + allProducts[i].ProductName + '</option>';
+                    }
+                }
+
+                newRow.innerHTML = '<td><select name="products[' + productCount + '].ProductId" class="product-select" onchange="updatePrice(this)" required>' + productOptions + '</select></td>'
+                    + '<td><input type="number" name="products[' + productCount + '].Price" class="price-input" step="0.01" readonly /></td>'
+                    + '<td><input type="number" name="products[' + productCount + '].Quantity" class="quantity-input" value="1" step="0.01" onchange="updateTotal(this)" title="Nhập số lượng" /></td>'
+                    + '<td><span class="total-amount">0</span></td>'
+                    + '<td><button type="button" class="btn-remove" onclick="removeProductRow(' + productCount + ')">Xóa</button></td>';
+
+                tbody.appendChild(newRow);
+                productCount++;
+            }
+
+            function updatePrice(select) {
+                var productId = select.value;
+                var row = select.closest('tr');
+                var priceInput = row.querySelector('.price-input');
+                var quantityInput = row.querySelector('.quantity-input');
+                
+                if (productId && allProducts && allProducts.length > 0) {
+                    for (var i = 0; i < allProducts.length; i++) {
+                        if (allProducts[i].ProductId == productId) {
+                            priceInput.value = allProducts[i].Price;
+                            quantityInput.value = 1;
+                            updateTotal(quantityInput);
+                            return;
+                        }
+                    }
+                }
+                priceInput.value = 0;
+            }
+
+            function updateTotal(quantityInput) {
+                var row = quantityInput.closest('tr');
+                var priceInput = row.querySelector('.price-input');
+                var totalSpan = row.querySelector('.total-amount');
+                
+                var price = parseFloat(priceInput.value) || 0;
+                var quantity = parseFloat(quantityInput.value) || 0;
+                var total = price * quantity;
+                
+                totalSpan.textContent = total.toFixed(0);
+            }
+
+            function removeProductRow(index) {
+                var row = document.getElementById('product-row-' + index);
+                if (row) {
+                    row.remove();
+                }
+            }
+
+            // Handle form submission for new customer
+            document.addEventListener('DOMContentLoaded', function() {
+                var form = document.querySelector('form');
+                form.onsubmit = function(e) {
+                    var customerId = document.getElementById('customerSelect').value;
+                    var newCustomerName = document.getElementById('newCustomerName').value;
+                    
+                    if (!customerId && !newCustomerName) {
+                        alert('Vui lòng chọn khách hàng hoặc nhập tên khách hàng mới!');
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    if (newCustomerName) {
+                        // Add hidden input for new customer name
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'CustomerName';
+                        input.value = newCustomerName;
+                        form.appendChild(input);
+                    }
+                    
+                    return true;
+                };
+            });
+        </script>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-submit">Tạo Đơn Hàng</button>
+            @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-cancel" })
+        </div>
+    }
+
+    <p class="text-center">Lưu ý: Ngày đặt hàng sẽ được tự động ghi nhận là hôm nay</p>
+</div>

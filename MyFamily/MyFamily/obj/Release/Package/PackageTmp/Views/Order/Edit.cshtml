@@ -1,0 +1,503 @@
+@using MyFamily.Models
+@model Order
+
+@{
+    ViewBag.Title = "Chỉnh Sửa Đơn Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-container {
+        width: 100%;
+        max-width: 700px;
+        margin: 20px auto;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .form-container h2 {
+        color: #4a7c59;
+        margin-bottom: 20px;
+    }
+
+    .order-id-info {
+        background-color: #f9f9f9;
+        border-left: 4px solid #4a7c59;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 3px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 0 5px rgba(74, 124, 89, 0.3);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        flex: 1;
+    }
+
+    .btn-submit {
+        background-color: #4a7c59;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background-color: #3a6c49;
+    }
+
+    .btn-cancel {
+        background-color: #666;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #555;
+    }
+
+    .btn-add-product {
+        background-color: #27ae60;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .btn-add-product:hover {
+        background-color: #229954;
+    }
+
+    .btn-remove {
+        background-color: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btn-remove:hover {
+        background-color: #c0392b;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+
+    .readonly-field {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+    }
+
+    .products-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 13px;
+    }
+
+    .products-info-table th {
+        background-color: #f0f0f0;
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .products-info-table td {
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+    }
+
+    .products-info-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="form-container">
+    <h2>@ViewBag.Title</h2>
+
+    @using (Html.BeginForm("Edit", "Order", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="order-id-info">
+            <strong>Đơn Hàng ID:</strong> @Model.OrderId
+            <br />
+            <strong>Ngày Tạo:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+            <br />
+            <strong>Khách Hàng:</strong> @Model.Customer.Name
+        </div>
+
+        <div class="order-id-info" style="background-color: #e8f5e9; border-left-color: #27ae60;">
+            <h4 style="color: #27ae60; margin: 0 0 10px 0;">💰 Thông Tin Thanh Toán</h4>
+            <strong>Tổng Tiền Hàng:</strong> <span style="color: #d32f2f; font-weight: bold;" class="payment-total-amount">@Model.TotalAmount.ToString("N0")</span> VND
+            <br />
+            <strong>Tiền Đã Trả:</strong> <span style="color: #388e3c; font-weight: bold;">@Model.PaidAmount.ToString("N0")</span> VND
+            <br />
+            <strong>Tiền Còn Thiếu:</strong> 
+            @if (Model.DebtAmount > 0)
+            {
+                <span style="color: #d32f2f; font-weight: bold;" class="payment-debt-amount">@Model.DebtAmount.ToString("N0")</span>
+            }
+            else if (Model.DebtAmount < 0)
+            {
+                <span class="refund-label" style="color: #0066cc; font-weight: bold;">(Hoàn Lại) </span><span style="color: #0066cc; font-weight: bold;" class="payment-debt-amount">@Math.Abs(Model.DebtAmount).ToString("N0")</span>
+            }
+            else
+            {
+                <span style="color: #388e3c; font-weight: bold;" class="payment-debt-amount">0</span>
+            }
+            VND
+        </div>
+
+        @Html.HiddenFor(model => model.OrderId)
+        @Html.HiddenFor(model => model.OrderDate)
+        @Html.HiddenFor(model => model.CustomerId)
+        @Html.HiddenFor(model => model.TotalAmount)
+        @Html.HiddenFor(model => model.PaidAmount)
+        @Html.HiddenFor(model => model.DebtAmount)
+        @Html.HiddenFor(model => model.CostAmount)
+        @Html.HiddenFor(model => model.ProfitAmount)
+
+        <h3 style="color: #4a7c59; margin-top: 20px; margin-bottom: 15px;">📦 Sản Phẩm Hiện Tại</h3>
+        if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
+        {
+            <table class="products-info-table">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá(VND)</th>
+                        <th>Số Lượng(KG) - Sửa</th>
+                        <th>Tổng Tiền(VND)</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int index = 1;
+                        foreach (var detail in Model.OrderDetails)
+                        {
+                            var totalPrice = detail.Price * detail.Quantity;
+                            <tr id="existing-product-row-@detail.OrderDetailId">
+                                <td>@index</td>
+                                <td>@detail.Product.ProductName</td>
+                                <td class="product-price" data-price="@detail.Price">@detail.Price.ToString("N0")</td>
+                                <td>
+                                    <input type="number" name="quantities[@index-1]" 
+                                           value="@detail.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)" 
+                                           step="0.01" min="0" style="width: 100px; padding: 5px;"
+                                           class="quantity-input-existing"
+                                           data-index="@index-1"
+                                           data-product-id="@detail.OrderDetailId"
+                                           data-price="@detail.Price"
+                                           onchange="updateExistingProductTotal(this)" />
+                                    <input type="hidden" name="orderDetailIds[@index-1]" value="@detail.OrderDetailId" />
+                                </td>
+                                <td class="product-total-@detail.OrderDetailId">@totalPrice.ToString("N0")</td>
+                                <td>
+                                    <button type="button" class="btn-remove" onclick="removeExistingProduct(@detail.OrderDetailId)">Xóa</button>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p style="color: #999; margin: 20px 0;">Không có sản phẩm trong đơn hàng này.</p>
+        }
+
+        <h3 style="color: #4a7c59; margin-top: 30px; margin-bottom: 15px;">➕ Thêm Sản Phẩm Mới</h3>
+        <button type="button" class="btn-add-product" onclick="addNewProductRow()">+ Thêm Sản Phẩm</button>
+        
+        <table class="products-info-table">
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th>Giá(VND)</th>
+                    <th>Số Lượng(KG)</th>
+                    <th>Tổng Tiền(VND)</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody id="newProductsBody">
+            </tbody>
+        </table>
+
+        <!-- Hidden data for products -->
+        <div id="productsData" data-products="@Html.Raw(Json.Encode(ViewBag.AllProducts ?? new List<object>()))" style="display:none;"></div>
+
+        <script>
+            var newProductCount = 0;
+            var removedOrderDetailIds = [];
+            var allProducts = [];
+            
+            // Load products when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                // First try to get from data attribute (ViewBag)
+                var productsDataDiv = document.getElementById('productsData');
+                if (productsDataDiv && productsDataDiv.getAttribute('data-products')) {
+                    try {
+                        var jsonStr = productsDataDiv.getAttribute('data-products');
+                        if (jsonStr && jsonStr.length > 2) {
+                            allProducts = JSON.parse(jsonStr);
+                        }
+                    } catch(e) {
+                        console.error('Error parsing products from data attribute:', e);
+                    }
+                }
+                
+                // If no products from ViewBag, fetch via AJAX
+                if (!allProducts || allProducts.length === 0) {
+                    console.log('Fetching products via AJAX...');
+                    fetch('/Product/GetAll')
+                        .then(response => response.json())
+                        .then(data => {
+                            allProducts = data;
+                            console.log('Products loaded via AJAX:', allProducts);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching products:', error);
+                            allProducts = [];
+                        });
+                } else {
+                    console.log('Products loaded from ViewBag:', allProducts);
+                }
+            });
+
+            function addNewProductRow() {
+                var tbody = document.getElementById('newProductsBody');
+                var newRow = document.createElement('tr');
+                newRow.id = 'new-product-row-' + newProductCount;
+                
+                var productOptions = '<option value="">-- Chọn Sản Phẩm --</option>';
+                if (allProducts && allProducts.length > 0) {
+                    for (var i = 0; i < allProducts.length; i++) {
+                        productOptions += '<option value="' + allProducts[i].ProductId + '">' + allProducts[i].ProductName + '</option>';
+                    }
+                } else {
+                    console.warn('No products available!');
+                    productOptions += '<option disabled>Không có sản phẩm</option>';
+                }
+
+                newRow.innerHTML = '<td><select name="newProducts[' + newProductCount + '].ProductId" class="product-select" onchange="updatePrice(this)" required>' + productOptions + '</select></td>'
+                    + '<td><input type="number" name="newProducts[' + newProductCount + '].Price" class="price-input" step="0.01" readonly /></td>'
+                    + '<td><input type="number" name="newProducts[' + newProductCount + '].Quantity" class="quantity-input" value="1" step="0.01" onchange="updateTotal(this)" title="Nhập số lượng" /></td>'
+                    + '<td><span class="total-amount">0</span></td>'
+                    + '<td><button type="button" class="btn-remove" onclick="removeNewProductRow(' + newProductCount + ')">Xóa</button></td>';
+
+                tbody.appendChild(newRow);
+                newProductCount++;
+            }
+
+            function removeNewProductRow(index) {
+                var row = document.getElementById('new-product-row-' + index);
+                if (row) {
+                    row.remove();
+                    recalculateOverallTotal();
+                }
+            }
+
+            function removeExistingProduct(orderDetailId) {
+                if (confirm('Bạn chắc chắn muốn xóa sản phẩm này khỏi đơn hàng?')) {
+                    var row = document.getElementById('existing-product-row-' + orderDetailId);
+                    if (row) {
+                        row.style.display = 'none';
+                        recalculateOverallTotal();
+                    }
+                    removedOrderDetailIds.push(orderDetailId);
+                    
+                    // Add hidden input to track removed product
+                    var form = document.querySelector('form');
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'removedDetailIds';
+                    input.value = removedOrderDetailIds.join(',');
+                    // Remove old input if exists
+                    var oldInput = form.querySelector('input[name="removedDetailIds"]');
+                    if (oldInput) oldInput.remove();
+                    form.appendChild(input);
+                }
+            }
+
+            function updatePrice(select) {
+                var productId = select.value;
+                var row = select.closest('tr');
+                var priceInput = row.querySelector('.price-input');
+                var quantityInput = row.querySelector('.quantity-input');
+                
+                if (productId && allProducts && allProducts.length > 0) {
+                    for (var i = 0; i < allProducts.length; i++) {
+                        if (allProducts[i].ProductId == productId) {
+                            priceInput.value = allProducts[i].Price;
+                            quantityInput.value = 1;
+                            updateTotal(quantityInput);
+                            return;
+                        }
+                    }
+                }
+                priceInput.value = 0;
+            }
+
+            function updateTotal(quantityInput) {
+                var row = quantityInput.closest('tr');
+                var priceInput = row.querySelector('.price-input');
+                var totalSpan = row.querySelector('.total-amount');
+                
+                var price = parseFloat(priceInput.value) || 0;
+                var quantity = parseFloat(quantityInput.value) || 0;
+                var total = price * quantity;
+                
+                totalSpan.textContent = total.toFixed(0);
+                
+                // Update overall payment summary
+                recalculateOverallTotal();
+            }
+
+            function calculateNewTotal() {
+                // Get initial total from hidden field
+                var initialTotal = parseFloat(document.querySelector('input[name="TotalAmount"]').value) || 0;
+                
+                // This will be recalculated on server side when form is submitted
+                // For now, we just show the current display
+                return initialTotal;
+            }
+
+            function updatePaymentSummary() {
+                // Note: Real-time calculation happens on server when form is submitted
+                // This function is a placeholder for future enhancement
+                // The payment summary will show actual values after form submission
+            }
+
+            function updateExistingProductTotal(input) {
+                var productId = input.getAttribute('data-product-id');
+                var price = parseFloat(input.getAttribute('data-price')) || 0;
+                var quantity = parseFloat(input.value) || 0;
+                var total = price * quantity;
+                
+                // Update the total for this product row
+                var totalCell = document.querySelector('.product-total-' + productId);
+                if (totalCell) {
+                    totalCell.textContent = total.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
+                }
+                
+                // Recalculate overall total
+                recalculateOverallTotal();
+            }
+
+            function recalculateOverallTotal() {
+                var newTotalAmount = 0;
+                
+                // Sum all existing product quantities and prices
+                var existingInputs = document.querySelectorAll('.quantity-input-existing');
+                existingInputs.forEach(function(input) {
+                    var price = parseFloat(input.getAttribute('data-price')) || 0;
+                    var quantity = parseFloat(input.value) || 0;
+                    newTotalAmount += (price * quantity);
+                });
+                
+                // Sum all new products being added
+                var newProductRows = document.querySelectorAll('#newProductsBody tr');
+                newProductRows.forEach(function(row) {
+                    var priceInput = row.querySelector('.price-input');
+                    var quantityInput = row.querySelector('.quantity-input');
+                    if (priceInput && quantityInput) {
+                        var price = parseFloat(priceInput.value) || 0;
+                        var quantity = parseFloat(quantityInput.value) || 0;
+                        newTotalAmount += (price * quantity);
+                    }
+                });
+                
+                // Update the hidden TotalAmount field
+                document.querySelector('input[name="TotalAmount"]').value = newTotalAmount;
+                
+                // Update the displayed total in the payment summary
+                var paidAmount = parseFloat(document.querySelector('input[name="PaidAmount"]').value) || 0;
+                var debtAmount = newTotalAmount - paidAmount;
+                
+                // Update the display
+                var totalDisplay = document.querySelector('.payment-total-amount');
+                if (totalDisplay) {
+                    totalDisplay.textContent = newTotalAmount.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
+                }
+                
+                var debtDisplay = document.querySelector('.payment-debt-amount');
+                if (debtDisplay) {
+                    debtDisplay.textContent = debtAmount.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
+                    if (debtAmount > 0) {
+                        debtDisplay.style.color = '#d32f2f';
+                        if (debtDisplay.parentElement.querySelector('.refund-label')) {
+                            debtDisplay.parentElement.querySelector('.refund-label').style.display = 'none';
+                        }
+                    } else if (debtAmount < 0) {
+                        debtDisplay.style.color = '#0066cc';
+                        var refundLabel = document.createElement('span');
+                        refundLabel.className = 'refund-label';
+                        refundLabel.textContent = '(Hoàn Lại) ';
+                        if (debtDisplay.parentElement.querySelector('.refund-label')) {
+                            debtDisplay.parentElement.querySelector('.refund-label').textContent = '(Hoàn Lại) ';
+                        } else {
+                            debtDisplay.parentElement.insertBefore(refundLabel, debtDisplay);
+                        }
+                    } else {
+                        debtDisplay.style.color = '#388e3c';
+                        if (debtDisplay.parentElement.querySelector('.refund-label')) {
+                            debtDisplay.parentElement.querySelector('.refund-label').style.display = 'none';
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <div class="button-group" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-submit">💾 Lưu Thay Đổi</button>
+            @Html.ActionLink("↩️ Quay Lại", "Index", null, new { @class = "btn btn-cancel" })
+        </div>
+    }
+</div>

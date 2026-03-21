@@ -12,6 +12,13 @@
             }
         }
     }
+
+    // HTML Helper để kiểm tra active menu
+    Func<string, string, string> IsActive = (controller, action) => {
+        var currentController = (string)ViewContext.RouteData.Values["controller"];
+        var currentAction = (string)ViewContext.RouteData.Values["action"];
+        return (currentController == controller && currentAction == action) ? "active" : "";
+    };
 }
 <html>
 <head>
@@ -93,11 +100,11 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Dashboard", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Đơn Hàng", "Index", "Order", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Sản Phẩm", "Index", "Product", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("QR", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Liên Hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Dashboard", "Index", "Home", new { area = "" }, new { @class = "nav-link " + IsActive("Home", "Index") })</li>
+                    <li>@Html.ActionLink("Đơn Hàng", "Index", "Order", new { area = "" }, new { @class = "nav-link " + IsActive("Order", "Index") })</li>
+                    <li>@Html.ActionLink("Sản Phẩm", "Index", "Product", new { area = "" }, new { @class = "nav-link " + IsActive("Product", "Index") })</li>
+                    <li>@Html.ActionLink("QR", "About", "Home", new { area = "" }, new { @class = "nav-link " + IsActive("Home", "About") })</li>
+                    <li>@Html.ActionLink("Liên Hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link " + IsActive("Home", "Contact") })</li>
                 </ul>
                 @if (Request.IsAuthenticated)
                 {

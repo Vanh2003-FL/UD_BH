@@ -25,11 +25,9 @@ namespace MyFamily.Controllers
             // Calculate correct metrics
             decimal totalRevenue = orders.Sum(o => o.TotalAmount);
             
-            // Calculate unpaid amount based on order status
-            // An order is unpaid if Status is NOT DeliveredPaid (both delivered AND paid)
-            decimal totalUnpaid = orders
-                .Where(o => o.Status != OrderStatus.DeliveredPaid)
-                .Sum(o => o.TotalAmount);
+            // Calculate unpaid amount (tiền còn nợ) - Sum of all DebtAmount
+            // DebtAmount = TotalAmount - PaidAmount
+            decimal totalUnpaid = orders.Sum(o => o.DebtAmount);
             
             int totalCustomers = orders.Select(o => o.CustomerId).Distinct().Count();
 
